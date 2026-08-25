@@ -1,0 +1,75 @@
+﻿Miércoles 10 de junio 2026
+
+PREGUNTA: donde puedo buscar promotores para mi proyecto de software realizado
+
+RESPUESTA COPILOT
+**Para encontrar promotores para tu proyecto de software en México, lo más
+efectivo es combinar plataformas de *crowdfunding* (para levantar capital y
+validación de mercado) con marketplaces de servicios profesionales (para
+conectar con aliados técnicos o comerciales).**  
+
+---
+
+## 🔑 Opciones principales para buscar promotores
+
+### 1. **Plataformas de Crowdfunding (Fondeo Colectivo)**
+- **Kickstarter / Indiegogo**: Internacionales, reguladas por la Ley Fintech en
+	México. Ideales si tu software tiene un componente innovador o atractivo
+	para consumidores globales.  
+- **Donadora**: Popular en México para proyectos creativos, sociales y tecnológicos.  
+- **PlayBusiness**: Especializada en inversión colectiva en startups mexicanas.  
+- **Fondeadora**: Una de las más conocidas en México, con respaldo de la AFICO.  
+- **Idea.me**: Con presencia en Latinoamérica, útil para validar tu idea y
+	captar promotores regionales.  
+
+👉 Estas plataformas permiten **recaudar pequeñas aportaciones de muchos
+promotores**, ofreciendo recompensas (preventas, descuentos, acceso anticipado)
+o retornos de inversión.
+[Shopify](https://www.shopify.com/es/blog/plataformas-de-crowdfunding-en-mexico)  
+
+---
+
+### 2. **Marketplaces de Profesionales**
+- **MarketPro.mx**: Conecta con expertos en IT, marketing y negocios. Puedes publicar
+	tu proyecto y atraer promotores interesados en colaborar o invertir.
+	[marketpro.mx](https://marketpro.mx/)  
+- **Softi**: Plataforma mexicana donde publicas tu idea de software y ellos te
+	ayudan a formar equipo técnico y gestionar el desarrollo. Aunque está más
+	orientada a ejecución, también puede servir para encontrar aliados
+	estratégicos.  [softi.mx](https://softi.mx/)  
+
+---
+
+## 📊 Comparación rápida
+
+| Opción            | Tipo de promotor | Ventaja principal | Riesgo/Limitación |
+|-------------------|------------------|------------------|-------------------|
+| **Kickstarter**   | Global, creativo | Alcance internacional | Competencia alta |
+| **PlayBusiness**  | Inversores locales | Inversión en equity | Requiere estructura legal sólida |
+| **Donadora**      | Público general | Fácil acceso, donaciones | Menor enfoque en software |
+| **MarketPro.mx**  | Profesionales IT/negocios | Contacto directo con expertos | No siempre buscan invertir |
+| **Softi**         | Equipo técnico | Ejecución llave en mano | Más servicio que inversión |
+
+---
+
+## 🚨 Consejos prácticos
+- **Define tu propuesta de valor**: ¿Tu software resuelve un problema claro? Los
+	promotores buscan impacto y retorno.  
+- **Prepara un pitch sólido**: Incluye demo, roadmap y modelo de negocio.  
+- **Ofrece incentivos claros**: Preventas, participación accionaria o beneficios
+	exclusivos.  
+- **Valida en pequeño primero**: Usa crowdfunding como prueba de mercado antes de
+	buscar grandes inversores.  
+- **Cuida la transparencia**: Promotores valoran reportes claros de avances y uso
+	de fondos.  
+
+---
+
+## 🎯 Recomendación para ti en Mérida
+Empieza con **PlayBusiness** si buscas inversión formal en México, y combina con
+**Kickstarter** para validar tu software a nivel internacional. Paralelamente,
+publica tu proyecto en **MarketPro.mx** para atraer aliados técnicos y comerciales
+que puedan convertirse en promotores estratégicos.  
+
+¿Quieres que te arme un **plan paso a paso** para lanzar tu campaña de
+crowdfunding y atraer promotores en menos de 60 días?

@@ -1,0 +1,274 @@
+﻿@model List<SamanthaX.Model.Entity.GrammarEn>
+@{
+    ViewBag.Title = "Grammar Dashboard";
+    Layout = "~/Views/Shared/_LayoutSystem.cshtml";
+}
+
+<main>
+    <div class="row ms-4">
+        <div class="col-sm-12">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <h4>Grammar Dashboard</h4>
+                </div>
+                <div class="panel-body">
+                    <a class="btn btn-primary"
+                       href="@Url.Action(
+                            "EditG",
+                            "Grammar",
+                            new { grammarId = 0, origin = "CREATE"})">
+                        New Grammar
+                    </a>
+                    <hr />
+                    @if (ViewData["ErrorMessageSX"] != null) {
+                        <div class="mt-2">
+                            <div class="alert alert-warning" role="alert">
+                                @ViewData["ErrorMessageSX"]
+                            </div>
+                        </div>
+                    }
+                    @*----------------------------------------------------------------*@
+                    @*GRAMMAR*@
+                    @*----------------------------------------------------------------*@
+                    @if (Model == null) {
+                        <div class="mt-2">
+                            <div class="alert alert-danger" role="alert">
+                                <h3>Sin datos para mostrar</h3>
+                            </div>
+                        </div>
+                    } else {
+                        <div class="container text-start" style="background-color:#F57F17; color:white;">
+                            <div class="row">
+                                <div class="col" style="display:none">Id</div>
+                                <div class="col"><strong>Code</strong></div>
+                                <div class="col"><strong>Name</strong></div>
+                                <div class="col"><strong>Description</strong></div>
+                                <div class="col"><strong>Registration</strong></div>
+                                <div class="col"><strong>Enabled</strong></div>
+                                <div class="col"><strong>Actions</strong></div>
+                            </div>
+                        </div>
+                        <div class="accordion accordion-flush" id="accordionFlushGrammar">
+                            @foreach (SamanthaX.Model.Entity.GrammarEn item in Model) {
+                                var colortext = "";
+                                string classbutton = "";
+                                string labelbutton = "";
+                                if (item.Enabled) {
+                                    colortext = "black";
+                                    classbutton = "btn btn-danger";
+                                    labelbutton = "Disable";
+                                } else {
+                                    colortext = "red";
+                                    classbutton = "btn btn-dark";
+                                    labelbutton = "Enable";
+                                }
+                                <div class="accordion-item" style="background-color: #FBC02D;">
+                                    <div class="accordion-header">
+                                        <div class="container text-start">
+                                            <div class="row" style="height:40px;">
+                                                <div class="col" style="color:@colortext; display:none">
+                                                    @item.GrammarId
+                                                </div>
+                                                <div class="col" style="color:@colortext;">
+                                                    @item.Code
+                                                </div>
+                                                <div class="col"
+                                                     style="display:block;height:20px;white-space:nowrap;
+                                                        text-overflow:ellipsis;overflow:hidden;
+                                                        content:'...';position:relative;color:@colortext;">
+                                                    @item.Name
+                                                </div>
+                                                <div class="col"
+                                                        style="display:block;height:20px;white-space:nowrap;
+                                                        text-overflow:ellipsis;overflow:hidden;
+                                                        content:'...';position:relative";color:@colortext;>
+                                                    @item.Description
+                                                </div>
+                                                <div class="col"
+                                                     style="color:@colortext;display:block;height:20px;white-space:nowrap;
+                                                        text-overflow:ellipsis;overflow:hidden;
+                                                        content:'...';position:relative" ;>
+                                                    @item.DateRegistration
+                                                </div>
+                                                <div class="col" style="color:@colortext;">
+                                                    @item.Enabled
+                                                </div>
+                                                <div class="col" style="min-width:235px">
+                                                    <div class="row">
+                                                        <div class="col" style="width:35px">
+                                                            <a class="btn btn-success"
+                                                                href="@Url.Action(
+                                                                     "EditG",
+                                                                     "Grammar",
+                                                                     new { grammarId = item.GrammarId, origin = "UPDATING"}
+                                                                )">
+                                                                Edit
+                                                            </a>
+                                                        </div>
+                                                        <div class="col" style="width:45px">
+                                                            <a class="@classbutton"
+                                                                href="@Url.Action("EnableG", "Grammar", new { grammarId = item.GrammarId })">
+                                                                @labelbutton
+                                                            </a>
+                                                        </div>
+                                                        <div class="col ms-0" style="background-color:none">
+                                                            <button class="accordion-button collapsed"
+                                                                    style="height: 10px; width: 15px; background-color: #FBC02D;"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#@item.Code"
+                                                                    aria-expanded="false"
+                                                                    aria-controls=@item.Code>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @*----------------------------------------------------------------*@
+                                    @*GRAMMAR BUILDER*@
+                                    @*----------------------------------------------------------------*@
+                                    <div id=@item.Code class="accordion-collapse collapse" data-bs-parent="#accordionFlushGrammar">
+                                        <div class="accordion-body">
+                                            @if (item.GrammarBuilderList == null) {
+                                                <div class="mt-2">
+                                                    <div class="alert alert-danger" role="alert">
+                                                        <h3>No data to Display</h3>
+                                                    </div>
+                                                </div>
+                                            } else {
+                                                <div class="row">
+                                                    <div class="col" style="display:none">Id</div>
+                                                    <div class="col"><strong>Word Class</strong></div>
+                                                    <div class="col"><strong>Registration</strong></div>
+                                                    <div class="col"><strong>Enabled</strong></div>
+                                                    <div class="col"><strong>Actions</strong></div>
+                                                </div>
+                                                <div class="accordion accordion-flush" id=@item.Code@item.GrammarId>
+                                                    @foreach (SamanthaX.Model.Entity.GrammarBuilderEn itemGB in item.GrammarBuilderList) {
+                                                        <div class="accordion-item" style="background-color: #FDD835;">
+                                                            <div class="accordion-header">
+                                                                <div class="container text-start">
+                                                                    <div class="row" style="height:40px;">
+                                                                        <div style="color:@colortext; display:none"><p>@itemGB.GrammarBuilderId</p></div>
+                                                                        <div class="col"
+                                                                             style="display:block;height:20px;white-space:nowrap;
+                                                                                text-overflow:ellipsis;overflow:hidden;
+                                                                                content:'...';position:relative">
+                                                                            @itemGB.WordClassName
+                                                                        </div>
+                                                                        <div class="col"
+                                                                             style="display:block;height:20px;white-space:nowrap;
+                                                                                text-overflow:ellipsis;overflow:hidden;
+                                                                                content:'...';position:relative">
+                                                                            @itemGB.DateRegistration
+                                                                        </div>
+                                                                        <div class="col">@itemGB.Enabled</div>
+                                                                        <div class="col" style="min-width:235px">
+                                                                            <div class="row">
+                                                                                @*<div class="col" style="width:35px">
+                                                                                    <a class="btn btn-success"
+                                                                                       href="@Url.Action("Edit", "RecognizedWord", new { recognizedWordId = itemGB.GrammarBuilderId })">
+                                                                                        Edit
+                                                                                    </a>
+                                                                                </div>
+                                                                                <div class="col" style="width:45px">
+                                                                                    <a class="@classbutton"
+                                                                                       href="@Url.Action("Enable", "RecognizedWord", new { recognizedWordId = itemGB.GrammarBuilderId })">
+                                                                                        @labelbutton
+                                                                                    </a>
+                                                                                </div>*@
+                                                                                <div class="col ms-0">
+                                                                                    <button class="accordion-button collapsed"
+                                                                                            style="height: 10px; width: 15px; background-color: #FDD835"
+                                                                                            data-bs-toggle="collapse"
+                                                                                            data-bs-target="#@item.Code@itemGB.WordClassCode"
+                                                                                            aria-expanded="false"
+                                                                                            aria-controls=@item.Code@itemGB.WordClassCode>
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            @*----------------------------------------------------------------*@
+                                                            @*WORD CLASS*@
+                                                            @*----------------------------------------------------------------*@
+                                                            <div id=@item.Code@itemGB.WordClassCode class="accordion-collapse collapse" data-bs-parent=#@item.Code@item.GrammarId>
+                                                                <div class="accordion-body">
+                                                                    <div class="table-responsive">
+                                                                        <table class="table table-striped">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th style="display:none;">Id</th>
+                                                                                    <th>Code</th>
+                                                                                    <th>Word Class</th>
+                                                                                    <th>Related Words</th>
+                                                                                    <th>Registration</th>
+                                                                                    <th>Enable</th>
+                                                                                    @*<th style="width:180px;">Actions</th>*@
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                @if (itemGB.RecognizedWordsList == null) {
+                                                                                    <div class="mt-2">
+                                                                                        <div class="alert alert-danger" role="alert">
+                                                                                            <h3>No data to Display</h3>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                } else {
+                                                                                    foreach (SamanthaX.Model.Entity.RecognizedWordEn itemRW in itemGB.RecognizedWordsList) {
+                                                                                        <tr class="fs-6" style="background-color: #FFFF00; ">
+                                                                                            @{
+                                                                                                if (itemRW.Enabled) {
+                                                                                                    colortext = "black";
+                                                                                                    classbutton = "btn btn-danger";
+                                                                                                    labelbutton = "Disable";
+                                                                                                } else {
+                                                                                                    colortext = "red";
+                                                                                                    classbutton = "btn btn-dark";
+                                                                                                    labelbutton = "Enable";
+                                                                                                }
+                                                                                            }
+                                                                                            <td style="height: 10%; color: @colortext; display: none">@itemRW.RecognizedWordId</td>
+                                                                                            <td class="fs-6" style="height: 10%;font-size:10px">
+                                                                                                @itemRW.Code
+                                                                                            </td>
+                                                                                            <td style="color: @colortext">@itemRW.WordClass</td>
+                                                                                            <td style="color: @colortext">@itemRW.RelatedWords</td>
+                                                                                            <td style="height: 10%; color: @colortext">@itemRW.DateRegistration</td>
+                                                                                            <td style="height: 10%; color: @colortext">@itemRW.Enabled</td>
+                                                                                            @*<td style="height: 15px;">
+                                                                                                <a class="@classbutton"
+                                                                                                   style="background-color: red; --bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .50rem;"
+                                                                                                   href="@Url.Action("Enable","RecognizedWord", new { recognizedWordId = itemRW.RecognizedWordId})">
+                                                                                                    X
+                                                                                                </a>
+                                                                                            </td>*@
+                                                                                        </tr>
+                                                                                    }
+                                                                                }
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                             }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+

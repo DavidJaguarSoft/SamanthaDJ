@@ -1,0 +1,6 @@
+namespace SamanthaX.Api.Areas.HelpPage.ModelDescriptions
+{
+    public class SimpleTypeModelDescription : ModelDescription
+    {
+    }
+}

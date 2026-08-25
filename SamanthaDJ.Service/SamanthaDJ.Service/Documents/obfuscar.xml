@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- 
+PLANTILLA de Obfuscar
+Documentación completa en 
+https://docs.obfuscar.com/getting-started/configuration.html
+-->
+<Obfuscator>
+	<!-- CAMBIA RUTA donde están tus ensablados -->
+	<Var name="InPath" value="/bin/Release" />
+	<!-- CAMBIA RUTA donde quieres meter los ofuscados resultantes -->
+	<Var name="OutPath" value="/Ofuscados" />
+	<Var name="LogFile" value="ofuscacion-log.txt" />
+	<Var name="RenameProperties" value="true" />
+	<Var name="RenameEvents" value="true" />
+	<Var name="RenameFields" value="true" />
+	<Var name="KeepPublicApi" value="false" />
+	<Var name="HidePrivateApi" value="true" />
+	<Var name="UseUnicodeNames" value="true" />
+	<Var name="HideStrings" value="true" />
+	<Var name="OptimizeMethods" value="true" />
+	<Var name="SuppressIldasm" value="true" />
+	<!-- CAMBIA RUTA Y NOMBRE de los ensamblados finales -->
+	<Module file="$(REAL_INPATH)/SamanthaDJ.Socket.dll" />
+	<Module file="$(REAL_INPATH)/SamanthaX.Core.dll" />
+	<Module file="$(REAL_INPATH)/SamanthaX.Model.dll" />
+</Obfuscator>

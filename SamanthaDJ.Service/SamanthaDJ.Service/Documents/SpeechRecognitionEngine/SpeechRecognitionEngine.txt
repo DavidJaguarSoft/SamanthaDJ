@@ -1,0 +1,120 @@
+﻿
+https://learn.microsoft.com/en-us/dotnet/api/system.speech.recognition.speechrecognitionengine.setinputtodefaultaudiodevice?view=net-9.0-pp
+
+SpeechRecognitionEngine.SetInputToDefaultAudioDevice Method
+Reference
+Definition
+Namespace:
+System.Speech.Recognition
+Assembly:
+System.Speech.dll
+Package:
+System.Speech v9.0.2
+Source:
+SpeechRecognitionEngine.cs
+Configures the SpeechRecognitionEngine object to receive input from the default audio device.
+
+
+public void SetInputToDefaultAudioDevice();
+Examples
+The following example shows part of a console application that demonstrates basic speech recognition. The example uses output from the default audio device, performs multiple, asynchronous recognition operations, and exits when a user utters the phrase, "exit".
+
+------------------------------------------------------------------------------------
+using System;  
+using System.Globalization;  
+using System.Speech.Recognition;  
+using System.Threading;  
+
+namespace DefaultInput  
+{  
+  class Program  
+  {  
+    // Indicate whether asynchronous recognition has finished.  
+    static bool completed;  
+
+    static void Main(string[] args)  
+    {  
+      using (SpeechRecognitionEngine recognizer =  
+        new SpeechRecognitionEngine(new CultureInfo("en-US")))  
+      {  
+
+        // Create and load the exit grammar.  
+        Grammar exitGrammar = new Grammar(new GrammarBuilder("exit"));  
+        exitGrammar.Name = "Exit Grammar";  
+        recognizer.LoadGrammar(exitGrammar);  
+
+        // Create and load the dictation grammar.  
+        Grammar dictation = new DictationGrammar();  
+        dictation.Name = "Dictation Grammar";  
+        recognizer.LoadGrammar(dictation);  
+
+        // Attach event handlers to the recognizer.  
+        recognizer.SpeechRecognized +=  
+          new EventHandler<SpeechRecognizedEventArgs>(  
+            SpeechRecognizedHandler);  
+        recognizer.RecognizeCompleted +=  
+          new EventHandler<RecognizeCompletedEventArgs>(  
+            RecognizeCompletedHandler);  
+
+        // Assign input to the recognizer.  
+        recognizer.SetInputToDefaultAudioDevice();  
+
+        // Begin asynchronous recognition.  
+        Console.WriteLine("Starting recognition...");  
+        completed = false;  
+        recognizer.RecognizeAsync(RecognizeMode.Multiple);  
+
+        // Wait for recognition to finish.  
+        while (!completed)  
+        {  
+          Thread.Sleep(333);  
+        }  
+        Console.WriteLine("Done.");  
+      }  
+
+      Console.WriteLine();  
+      Console.WriteLine("Press any key to exit...");  
+      Console.ReadKey();  
+    }  
+
+    static void SpeechRecognizedHandler(  
+      object sender, SpeechRecognizedEventArgs e)  
+    {  
+      Console.WriteLine("  Speech recognized:");  
+      string grammarName = "<not available>";  
+      if (e.Result.Grammar.Name != null &&  
+        !e.Result.Grammar.Name.Equals(string.Empty))  
+      {  
+        grammarName = e.Result.Grammar.Name;  
+      }  
+      Console.WriteLine("    {0,-17} - {1}",  
+        grammarName, e.Result.Text);  
+
+      if (grammarName.Equals("Exit Grammar"))  
+      {  
+        ((SpeechRecognitionEngine)sender).RecognizeAsyncCancel();  
+      }  
+    }  
+
+    static void RecognizeCompletedHandler(  
+      object sender, RecognizeCompletedEventArgs e)  
+    {  
+      Console.WriteLine("  Recognition completed.");  
+      completed = true;  
+    }  
+  }  
+}
+
+------------------------------------------------------------------------------------
+
+Applies to
+Product	Versions
+.NET	8 (package-provided), 9 (package-provided)
+.NET Framework	3.0, 3.5, 4.0, 4.5, 4.5.1, 4.5.2, 4.6, 4.6.1, 4.6.2, 4.7 (package-provided), 4.7, 4.7.1 (package-provided), 4.7.1, 4.7.2 (package-provided), 4.7.2, 4.8 (package-provided), 4.8, 4.8.1
+.NET Standard	2.0 (package-provided)
+See also
+SetInputToAudioStream(Stream, SpeechAudioFormatInfo)
+SetInputToNull()
+SetInputToWaveFile(String)
+SetInputToWaveStream(Stream)
+RecognizeCompleted

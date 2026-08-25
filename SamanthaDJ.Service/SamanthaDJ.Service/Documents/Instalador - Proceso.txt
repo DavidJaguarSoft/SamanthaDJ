@@ -1,0 +1,19 @@
+﻿14 may 2026
+
+- Entrar al directorio "D:\Empresas\202401 SamanthaDJ\SamanthaInstaller"
+- Copiar los directorios (Eliminar si existen)
+	* D:\Empresas\202401 SamanthaDJ\SamanthaX\SamanthaDJ.Interface
+	* D:\Empresas\202401 SamanthaDJ\SamanthaX\SamanthaDJ.Service
+- Eliminar el directorio "D:\Empresas\202401 SamanthaDJ\SamanthaInstaller\SamanthaServiceInstaller\SamanthaDJ.Service\SamanthaDJ.Service\obj".
+- En el directorio "D:\Empresas\202401 SamanthaDJ\SamanthaInstaller\SamanthaServiceInstaller\SamanthaDJ.Service\SamanthaDJ.Service\bin" NO
+  eliminar todos los archivos de las carpetas "Debug" y "Release" (No borrar archivos "SamanthaConfig.json")
+- Cambiar las credenciales del archivo "SamanthaConfig.json" de
+  "D:\Empresas\202401 SamanthaDJ\SamanthaInstaller\SamanthaServiceInstaller\SamanthaDJ.Service\SamanthaDJ.Service\bin\Debug" y
+  "D:\Empresas\202401 SamanthaDJ\SamanthaInstaller\SamanthaServiceInstaller\SamanthaDJ.Service\SamanthaDJ.Service\bin\Release"
+- Eliminar los directorios 
+  * "D:\Empresas\202401 SamanthaDJ\SamanthaInstaller\SamanthaServiceInstaller\SamanthaDJ.Service\SamanthaDJ.Interface\obj"
+  * "D:\Empresas\202401 SamanthaDJ\SamanthaInstaller\SamanthaServiceInstaller\SamanthaDJ.Service\SamanthaDJ.Interface\bin"
+- Cargar la solucion en VS2026
+- Establecer como proyecto de inicio a "SamanthaDJ.Service".
+- Eliminar el directorio "Documents"
+- Eliminar el Nuget "Obfuscar"

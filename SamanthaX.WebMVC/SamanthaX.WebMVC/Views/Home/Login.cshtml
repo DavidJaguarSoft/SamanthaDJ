@@ -1,0 +1,126 @@
+﻿
+@model SamanthaX.WebMVC.Models.Home.LoginModel
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Login</h3>
+<div class="row">
+
+    <div class="danger">
+        @ViewBag.Error
+    </div>
+    <div class="col-md-4"></div>
+
+    <div class="col-md-4">
+        @using (Html.BeginForm("")) {
+            <form action="@Url.Content("~/Home/Login")" method="post">
+                <div class="form-group">
+                    <label>Email</label>
+                    <br />
+                    @Html.TextBox("User", null, new { @class = "form-control", @placeholder = "EMail" })
+                    <div style="color:red;">@Html.ValidationMessage("User")</div>
+                    <br />
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <br />
+                    @Html.TextBox("Password", null, new { @class = "form-control" })
+                    <div style="color:red;">@Html.ValidationMessage("Password")</div>
+                </div>
+
+                <div class="text-start">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="text-decoration-underline">
+                            @Html.ActionLink(
+                                "Click here to create new account",
+                                "Registration",
+                                "Home",
+                                new { area = "" },
+                                new { @class = "nav-link" }
+                           )
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary" onclick="Ejecutar()">Sigin</button>
+                </div>
+                @if (ViewData["ErrorMessageSX"] != null) {
+                    <div class="mt-2">
+                        <div class="alert alert-warning" role="alert">
+                            @ViewData["ErrorMessageSX"]
+                        </div>
+                    </div>
+                }
+                <div class="text-start">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="text-decoration-underline">
+                            @Html.ActionLink(
+                                "Olvidé mi contraseña !",
+                                "ForgotPassword",
+                                "Home",
+                                new { area = "" },
+                                new { @class = "nav-link" }
+                           )
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        }
+
+    </div>
+
+    <div class="col-md-4"></div>
+    @*<form action="@Url.Content("~/Home/Login")" method="post">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="User" placeholder="Enter EMail" />
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="Pass" placeholder="Password" />
+            </div>
+
+            <div class="form-group text-center">
+                <input type="submit" value="Entrar" class="btn btn-success" />
+            </div>
+        </form>*@
+
+</div>
+
+@*<button onclick="$('#MyModalTest').modal('show');">OnModal 1</button>*@
+
+<div id="MyModalTest" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Procesando información !</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Espere por favor ...</p>
+            </div>
+            @*<div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>*@
+        </div>
+    </div>
+</div>
+
+<script>
+    function Ejecutar() {
+        $('#MyModalTest').modal('show');
+
+        @*$.ajax({
+            url: '@Url.Action("~/home/login")',
+            type: 'Post',
+            data: {},
+        });*@
+    }
+</script>

@@ -1,0 +1,497 @@
+﻿@model SamanthaX.WebMVC.Models.System.MyProfileModel
+
+@{
+    ViewBag.Title = "My Profile";
+    Layout = "~/Views/Shared/_LayoutSystem.cshtml";
+}
+<main aria-labelledby="title">
+    <h2 id="title">@ViewBag.Title.</h2>
+    <h3>@ViewBag.Message</h3>
+    <form action="@Url.Content("~/System/MyProfile")" method="post">
+        <div class="accordion" id="accordionPanelsStayOpenExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                        Company
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        <a class="btn btn-dark btn-sm"
+                           href="@Url.Action(
+                            "Index",
+                            "System"
+                        )">
+                            Exit
+                        </a>
+
+                        <div class="form-group" style="display:none">
+                            <label>CompanyId</label>
+                            @Html.TextBox(
+                                "CompanyId",
+                                null,
+                                new {
+                                    @class = "form-control",
+                                    @maxlength = "10",
+                                }
+                            )
+                            <br />
+                        </div>
+
+                        <div class="row g-2">
+                            <label class="col-sm-2 col-form-label">Trade Name</label>
+                            @Html.TextBox(
+                                "Tradename",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "Tradename",
+                                    @maxlength = "50",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">Business Name</label>
+                            @Html.TextBox(
+                                "BusinessName",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "BusinessName",
+                                    @maxlength = "50",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">Name</label>
+                            @Html.TextBox(
+                                "Name",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "Name",
+                                    @maxlength = "50",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">FirstName</label>
+                            @Html.TextBox(
+                                "FirstName",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "FirstName",
+                                    @maxlength = "50",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">LastName</label>
+                            @Html.TextBox(
+                                "LastName",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "LastName",
+                                    @maxlength = "50",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">FTR</label>
+                            @Html.TextBox(
+                                "FTR",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "FTR",
+                                    @maxlength = "20",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">PRK</label>
+                            @Html.TextBox(
+                                "PRK",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "PRK",
+                                    @maxlength = "20",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">Street</label>
+                            @Html.TextBox(
+                                "Street",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "Street",
+                                    @maxlength = "20",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">StreetNumber</label>
+                            @Html.TextBox(
+                                "StreetNumber",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "StreetNumber",
+                                    @maxlength = "20",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">CrossingStreets</label>
+                            @Html.TextBox(
+                                "CrossingStreets",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "CrossingStreets",
+                                    @maxlength = "20",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">Colony</label>
+                            @Html.TextBox(
+                                "Colony",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "Colony",
+                                    @maxlength = "20",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">Business Name</label>
+                            @Html.TextBox(
+                                "BusinessName",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "BusinessName",
+                                    @maxlength = "20",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">City</label>
+                            @Html.TextBox(
+                                "City",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "City",
+                                    @maxlength = "20",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">Municipality</label>
+                            @Html.TextBox(
+                                "Municipality",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "Municipality",
+                                    @maxlength = "20",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">State</label>
+                            @Html.TextBox(
+                                "State",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "State",
+                                    @maxlength = "20",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">Country</label>
+                            @Html.TextBox(
+                                "Country",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "Country",
+                                    @maxlength = "20",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">PostalCode</label>
+                            @Html.TextBox(
+                                "PostalCode",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "PostalCode",
+                                    @maxlength = "20",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">CellPhoneNumber</label>
+                            @Html.TextBox(
+                                "CellPhoneNumber",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "CellPhoneNumber",
+                                    @maxlength = "50",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">PhoneNumber</label>
+                            @Html.TextBox(
+                                "PhoneNumber",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "PhoneNumber",
+                                    @maxlength = "20",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">EMail</label>
+                            @Html.TextBox(
+                                "EMail",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "EMail",
+                                    @maxlength = "100",
+                                    @readonly = "true",
+                                    @style = "border-style:solid; border-color:red;"
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-2 col-form-label">Token</label>
+                            @Html.TextBox(
+                                "Token",
+                                null,
+                                new {
+                                    @class = "col-6 col-form-label",
+                                    @placeholder = "Token",
+                                    @maxlength = "100",
+                                    @readonly = "true",
+                                    @style = "border-style:solid; border-color:red; with:300"
+                                }
+                            )
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary" onclick="Ejecutar()">Guardar</button>
+                        </div>
+
+                        <br />
+
+                        @if (ViewData["ErrorMessageSX"] != null) {
+                            <div class="mt-2">
+                                <div class="alert alert-warning" role="alert">
+                                    @ViewData["ErrorMessageSX"]
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true" aria-controls="panelsStayOpen-collapseTwo">
+                        Technical Information
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
+                    <div class="accordion-body">
+                        <div class="form-group" style="display:none">
+                            <label>SamanthaVoiceId</label>
+                            @Html.TextBox(
+                                "SamanthaVoiceId",
+                                null,
+                                new {
+                                    @class = "form-control",
+                                    @maxlength = "50",
+                                }
+                            )
+                        </div>
+
+                        <div class="form-group" style="display:none">
+                            <label>UserId</label>
+                            @Html.TextBox(
+                                "UserId",
+                                null,
+                                new {
+                                    @class = "form-control",
+                                    @maxlength = "50",
+                                }
+                            )
+                        </div>
+
+                        <div class="row g-2">
+                            <label class="col-sm-2 col-form-label">AIName</label>
+                            @Html.TextBox(
+                                "AIName",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "AIName",
+                                    @readonly = "true",
+                                    @style = "border-style:solid; border-color:red; with:300",
+                                    @maxlength = "20",
+                                }
+                            )
+                            <div class="col-auto" style="color:red;">@Html.ValidationMessage("AIName")</div>
+                        </div>
+
+                        <div class="row g-2">
+                            <label class="col-sm-2 col-form-label">OrderYou</label>
+                            @Html.TextBox(
+                                "OrderYou",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "OrderYou",
+                                    @maxlength = "100",
+                                }
+                            )
+                            <div class="col-auto" style="color:red;">@Html.ValidationMessage("OrderYou")</div>
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">Voice Processing Default</label>
+                            @Html.TextBox(
+                                "VoiceProcessingDefault",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "VoiceProcessingDefault",
+                                    @maxlength = "100",
+                                }
+                            )
+                            <div class="col-auto" style="color:red;">@Html.ValidationMessage("VoiceProcessingDefault")</div>
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">Voice Solution Default</label>
+                            @Html.TextBox(
+                                "VoiceSolutionDefault",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "VoiceSolutionDefault",
+                                    @maxlength = "100",
+                                }
+                            )
+                            <div class="col-auto" style="color:red;">@Html.ValidationMessage("VoiceSolutionDefault")</div>
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">Voice Cancel Default</label>
+                            @Html.TextBox(
+                                "VoiceCancelDefault",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "VoiceCancelDefault",
+                                    @maxlength = "100",
+                                }
+                            )
+                            <div class="col-auto" style="color:red;">@Html.ValidationMessage("VoiceCancelDefault")</div>
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">voiceFailDefault</label>
+                            @Html.TextBox(
+                                "voiceFailDefault",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "voiceFailDefault",
+                                    @maxlength = "100",
+                                }
+                            )
+                            <div class="col-auto" style="color:red;">@Html.ValidationMessage("voiceFailDefault")</div>
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">AnExceptionOcurred</label>
+                            @Html.TextBox(
+                                "AnExceptionOcurred",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @placeholder = "AnExceptionOcurred",
+                                    @maxlength = "50",
+                                }
+                            )
+                            <div class="col-auto" style="color:red;">@Html.ValidationMessage("AnExceptionOcurred")</div>
+                        </div>
+
+                        <div class="row g-2 mt-1">
+                            <label class="col-sm-2 col-form-label">LastUpdate</label>
+                            @Html.TextBox(
+                                "LastUpdate",
+                                null,
+                                new {
+                                    @class = "col-sm-3 col-form-label",
+                                    @maxlength = "100",
+                                    @readonly = "true",
+                                    @style = "border-style:solid; border-color:red;"
+                                }
+                            )
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary" onclick="Ejecutar()">Guardar</button>
+                        </div>
+
+                        @if (ViewData["ErrorMessageSX"] != null) {
+                            <div class="mt-2">
+                                <div class="alert alert-warning" role="alert">
+                                    @ViewData["ErrorMessageSX"]
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</main>

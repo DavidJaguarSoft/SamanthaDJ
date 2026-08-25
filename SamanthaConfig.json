@@ -1,0 +1,27 @@
+{
+    "Credential":
+    {
+        "Username": "DavidJaguarSoft@gmail.com",
+        "Token": "GbVZ24Tu.36A7oqfmNivMXLL1L7dl&Jcwsc4lgjQ#URL4BRXe"
+    },
+    "Culture": 
+    {
+        "CultureInfo": "es-ES",
+        "UICultureInfo": "es-ES",
+        "CultureSpeech": "es-MX",
+        "light": "333"
+    },
+    "Parameter": 
+    {
+        "TickSamanthaListens": "60"
+    },
+    "DirectoryPath": 
+    {
+        "PathLog": "C:\\DavidJaguarSoft\\SamanthaDJ\\LogFile"
+    },
+    "Other": 
+    {
+        "PropertyA": "1000",
+        "PropertyB": "1273010254"
+    }
+}

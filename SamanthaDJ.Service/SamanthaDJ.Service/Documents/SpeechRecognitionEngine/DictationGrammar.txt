@@ -1,0 +1,140 @@
+﻿https://learn.microsoft.com/es-es/dotnet/api/system.speech.recognition.dictationgrammar?view=netframework-4.6
+
+DictationGrammar Clase
+Referencia
+
+
+Definición
+Espacio de nombres: System.Speech.Recognition
+Ensamblado: System.Speech.dll
+
+Representa una gramática de reconocimiento de voz usada para el dictado de texto libre.
+
+C#
+public class DictationGrammar : System.Speech.Recognition.Grammar
+
+Herencia Object -> Grammar -> DictationGrammar
+
+Ejemplos
+En el ejemplo siguiente se crean tres gramáticas de dictado, se agregan a un nuevo objeto y SpeechRecognitionEngine se devuelve el nuevo objeto . La primera gramática es la gramática de dictado predeterminada. La segunda gramática es la gramática de dictado ortográfico. La tercera gramática es la gramática de dictado predeterminada que incluye una frase de contexto. El método se usa para asociar la frase de contexto a la gramática de dictado después de SetDictationContext cargarla en el objeto SpeechRecognitionEngine .
+
+private SpeechRecognitionEngine LoadDictationGrammars()  
+{  
+
+  // Create a default dictation grammar.  
+  DictationGrammar defaultDictationGrammar = new DictationGrammar();  
+  defaultDictationGrammar.Name = "default dictation";  
+  defaultDictationGrammar.Enabled = true;  
+
+  // Create the spelling dictation grammar.  
+  DictationGrammar spellingDictationGrammar =  
+    new DictationGrammar("grammar:dictation#spelling");  
+  spellingDictationGrammar.Name = "spelling dictation";  
+  spellingDictationGrammar.Enabled = true;  
+
+  // Create the question dictation grammar.  
+  DictationGrammar customDictationGrammar =  
+    new DictationGrammar("grammar:dictation");  
+  customDictationGrammar.Name = "question dictation";  
+  customDictationGrammar.Enabled = true;  
+
+  // Create a SpeechRecognitionEngine object and add the grammars to it.  
+  SpeechRecognitionEngine recoEngine = new SpeechRecognitionEngine();  
+  recoEngine.LoadGrammar(defaultDictationGrammar);  
+  recoEngine.LoadGrammar(spellingDictationGrammar);  
+  recoEngine.LoadGrammar(customDictationGrammar);  
+
+  // Add a context to customDictationGrammar.  
+  customDictationGrammar.SetDictationContext("How do you", null);  
+
+  return recoEngine;  
+}
+
+Comentarios
+Esta clase proporciona a las aplicaciones un modelo de lenguaje predefinido que puede procesar la entrada hablada del usuario en texto. Esta clase admite objetos predeterminados y DictationGrammar personalizados. Para obtener información sobre cómo seleccionar una gramática de dictado, vea el DictationGrammar(String) constructor .
+
+De forma predeterminada, el DictationGrammar modelo de lenguaje no tiene contexto. No usa palabras específicas ni el orden de las palabras para identificar e interpretar la entrada de audio. Para agregar contexto a la gramática de dictado, use el SetDictationContext método .
+
+ Nota
+DictationGrammar Los objetos no admiten la Priority propiedad . DictationGrammar produce una NotSupportedException excepción if Priority is set.
+
+Constructores
+DictationGrammar()	
+Inicializa una nueva instancia de la clase DictationGrammar para la gramática de dictado predeterminada proporcionada por la tecnología Windows Desktop Speech.
+
+DictationGrammar(String)	
+Inicializa una nueva instancia de la clase DictationGrammar con una gramática de dictado específica.
+
+----------------------------------------------------------------------------------
+Propiedades
+Enabled	
+Obtiene o establece un valor que controla si Grammar se puede usar por un módulo de reconocimiento de voz para realizar el reconocimiento.
+
+(Heredado de Grammar)
+IsStg	
+Obtiene si una gramática está fuertemente tipada.
+
+(Heredado de Grammar)
+Loaded	
+Obtiene si un objeto Grammar ha sido cargado por un reconocedor de voz.
+
+(Heredado de Grammar)
+Name	
+Obtiene o establece el nombre de un objeto Grammar.
+
+(Heredado de Grammar)
+Priority	
+Obtiene o establece el valor de prioridad de un objeto Grammar.
+
+(Heredado de Grammar)
+ResourceName	
+Obtiene o establece un valor con el nombre de un recurso binario usado para cargar el Grammar actual.
+
+(Heredado de Grammar)
+RuleName	
+Obtiene el nombre de la regla raíz o el punto de entrada de un objeto Grammar.
+
+(Heredado de Grammar)
+Weight	
+Obtiene o establece el valor del ancho en píxeles del objeto Grammar.
+(Heredado de Grammar)
+
+----------------------------------------------------------------------------------
+Métodos
+Equals(Object)	
+Determina si el objeto especificado es igual que el objeto actual.
+
+(Heredado de Object)
+GetHashCode()	
+Sirve como la función hash predeterminada.
+
+(Heredado de Object)
+GetType()	
+Obtiene el Type de la instancia actual.
+
+(Heredado de Object)
+MemberwiseClone()	
+Crea una copia superficial del Object actual.
+
+(Heredado de Object)
+SetDictationContext(String, String)	
+Agrega un contexto a una gramática de dictado que un objeto SpeechRecognizer o SpeechRecognitionEngine ha cargado.
+
+StgInit(Object[])	
+El método StgInit inicializa una gramática fuertemente tipada.
+
+(Heredado de Grammar)
+ToString()	
+Devuelve una cadena que representa el objeto actual.
+(Heredado de Object)
+
+----------------------------------------------------------------------------------
+Eventos
+SpeechRecognized	
+Se genera cuando un reconocedor de voz realiza el reconocimiento usando el objeto Grammar.
+(Heredado de Grammar)
+
+----------------------------------------------------------------------------------
+Se aplica a
+Producto	Versiones
+.NET Framework	3.0, 3.5, 4.0, 4.5, 4.5.1, 4.5.2, 4.6, 4.6.1, 4.6.2, 4.7, 4.7.1, 4.7.2, 4.8

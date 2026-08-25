@@ -1,0 +1,481 @@
+﻿Enero 2026
+
+c# comunicar proyecto framework (produce los eventos )con proyecto blazor assembly que consume los eventos,
+implementacion mediante sockets tradicional (NO Websocket-sharp)
+
+GitHub Copilot
+Tomo aire. Paso a paso y al grano:
+Resumen rápido — restricción importante
+•	El navegador no puede abrir sockets TCP "tradicionales" (System.Net.Sockets) desde Blazor WebAssembly. Sólo puede usar WebSocket o HTTP/SSE.
+•	Propuesta cumplida: en la app .NET Framework expones un servidor TCP tradicional (para clientes nativos) y, a la vez, un servidor WebSocket
+    implementado con las APIs de .NET (sin websocket-sharp). El servidor WebSocket sirve al navegador/Blazor. Ambos servidores comparten los
+    mismos eventos de Samantha y reenvían los mensajes en JSON.
+•	Entregué código listo para copiar/pegar: clase puente SocketBridge (TcpListener + HttpListener WebSocket), cambios mínimos en
+    FormSamantha.cs, helper JS para Blazor y ejemplo de componente.
+Archivos a añadir/modificar:
+
+--------------------------------------------
+SocketBridge.cs
+
+using SamanthaDJ.Interface;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Net.WebSockets;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace SamanthaX.ServiceWF.LocalSocket {
+    public class SocketBridge {
+        private readonly IPAddress _tcpAddress;
+        private readonly int _tcpPort;
+        private readonly string _httpPrefix; // para WebSocket via HttpListener
+        private TcpListener _tcpListener;
+        private HttpListener _httpListener;
+        private readonly List<TcpClient> _tcpClients = new List<TcpClient>();
+        private readonly List<System.Net.WebSockets.WebSocket> _webSockets = new List<System.Net.WebSockets.WebSocket>();
+        private CancellationTokenSource _cts;
+
+        public SocketBridge(string tcpAddress = "127.0.0.1", int tcpPort = 5004, string httpPrefix = "http://localhost:5003/") {
+            _tcpAddress = IPAddress.Parse(tcpAddress);
+            _tcpPort = tcpPort;
+            _httpPrefix = httpPrefix;
+        }
+
+        public void Start() {
+            _cts = new CancellationTokenSource();
+            StartTcpListener(_cts.Token);
+            StartWebSocketListener(_cts.Token);
+
+            // Suscribir eventos Samantha
+            Samantha.EventDetectedInstructions += Samantha_EventDetectedInstructions;
+            Samantha.EventListening += Samantha_EventListening;
+            Samantha.EventWordRecognized += Samantha_EventWordRecognized;
+            Samantha.EventTimeRemaining += Samantha_EventTimeRemaining;
+        }
+
+        public void Stop() {
+            try { _cts?.Cancel(); } catch { }
+            try {
+                lock (_tcpClients) {
+                    foreach (var c in _tcpClients) {
+                        try { c.Close(); } catch { }
+                    }
+                    _tcpClients.Clear();
+                }
+            } catch { }
+
+            try {
+                lock (_webSockets) {
+                    foreach (var ws in _webSockets) {
+                        try { ws.Abort(); } catch { }
+                    }
+                    _webSockets.Clear();
+                }
+            } catch { }
+
+            try { _tcpListener?.Stop(); } catch { }
+            try { _httpListener?.Stop(); } catch { }
+
+            // Desuscribir
+            Samantha.EventDetectedInstructions -= Samantha_EventDetectedInstructions;
+            Samantha.EventListening -= Samantha_EventListening;
+            Samantha.EventWordRecognized -= Samantha_EventWordRecognized;
+            Samantha.EventTimeRemaining -= Samantha_EventTimeRemaining;
+        }
+
+        private void StartTcpListener(CancellationToken ct) {
+            _tcpListener = new TcpListener(_tcpAddress, _tcpPort);
+            _tcpListener.Start();
+            Task.Run(async () => {
+                while (!ct.IsCancellationRequested) {
+                    TcpClient client = null;
+                    try {
+                        client = await _tcpListener.AcceptTcpClientAsync();
+                    } catch {
+                        break;
+                    }
+                    lock (_tcpClients) { _tcpClients.Add(client); }
+                    _ = Task.Run(() => HandleTcpClientAsync(client, ct), ct);
+                }
+            }, ct);
+        }
+
+        private async Task HandleTcpClientAsync(TcpClient client, CancellationToken ct) {
+            var stream = client.GetStream();
+            var buffer = new byte[1024];
+            try {
+                // Opcional: leer datos entrantes si el cliente envía comandos
+                while (!ct.IsCancellationRequested && client.Connected) {
+                    if (stream.DataAvailable) {
+                        int read = await stream.ReadAsync(buffer, 0, buffer.Length, ct);
+                        if (read == 0) break;
+                        // Ignorar contenido o podrías implementar comandos
+                    } else {
+                        await Task.Delay(200, ct);
+                    }
+                }
+            } catch { }
+            finally {
+                try { client.Close(); } catch { }
+                lock (_tcpClients) { _tcpClients.Remove(client); }
+            }
+        }
+
+        private void StartWebSocketListener(CancellationToken ct) {
+            _httpListener = new HttpListener();
+            _httpListener.Prefixes.Add(_httpPrefix);
+            try { _httpListener.Start(); } catch {
+                // Si falla (permiso), caller debe manejarlo
+                return;
+            }
+
+            Task.Run(async () => {
+                while (!ct.IsCancellationRequested && _httpListener.IsListening) {
+                    HttpListenerContext ctx = null;
+                    try {
+                        ctx = await _httpListener.GetContextAsync();
+                    } catch {
+                        break;
+                    }
+
+                    if (ctx.Request.IsWebSocketRequest) {
+                        HttpListenerWebSocketContext wsContext = null;
+                        try {
+                            wsContext = await ctx.AcceptWebSocketAsync(null);
+                            var ws = wsContext.WebSocket;
+                            lock (_webSockets) { _webSockets.Add(ws); }
+                            _ = Task.Run(() => HandleWebSocketAsync(ws, ct), ct);
+                        } catch {
+                            try { ctx.Response.StatusCode = 500; ctx.Response.Close(); } catch { }
+                        }
+                    } else {
+                        // Petición no WebSocket — responder simple
+                        ctx.Response.StatusCode = 400;
+                        using (var sw = new StreamWriter(ctx.Response.OutputStream)) {
+                            sw.Write("WebSocket endpoint");
+                        }
+                        ctx.Response.Close();
+                    }
+                }
+            }, ct);
+        }
+
+        private async Task HandleWebSocketAsync(System.Net.WebSockets.WebSocket ws, CancellationToken ct) {
+            var buffer = new ArraySegment<byte>(new byte[1024]);
+            try {
+                while (ws.State == WebSocketState.Open && !ct.IsCancellationRequested) {
+                    // Esperar un receive para detectar cierre por parte del cliente
+                    var result = await ws.ReceiveAsync(buffer, ct);
+                    if (result.MessageType == WebSocketMessageType.Close) break;
+                    // Si recibes mensajes de cliente, puedes procesarlos (no necesario ahora)
+                }
+            } catch { }
+            finally {
+                try { ws.Abort(); } catch { }
+                lock (_webSockets) { _webSockets.Remove(ws); }
+            }
+        }
+
+        private void Broadcast(string eventName, string payloadJson) {
+            var msg = $"{{\"event\":\"{eventName}\",\"data\":{payloadJson}}}";
+
+            // Enviar a clientes TCP
+            byte[] tcpBytes = Encoding.UTF8.GetBytes(msg + "\n");
+            lock (_tcpClients) {
+                foreach (var client in _tcpClients.ToArray()) {
+                    try {
+                        if (client?.Connected == true) {
+                            var stream = client.GetStream();
+                            stream.Write(tcpBytes, 0, tcpBytes.Length);
+                            stream.Flush();
+                        } else {
+                            client.Close();
+                            _tcpClients.Remove(client);
+                        }
+                    } catch {
+                        try { client.Close(); } catch { }
+                        _tcpClients.Remove(client);
+                    }
+                }
+            }
+
+            // Enviar a WebSocket clients
+            var wsBytes = Encoding.UTF8.GetBytes(msg);
+            ArraySegment<byte> wsSegment = new ArraySegment<byte>(wsBytes);
+            lock (_webSockets) {
+                foreach (var ws in _webSockets.ToArray()) {
+                    try {
+                        if (ws != null && ws.State == WebSocketState.Open) {
+                            ws.SendAsync(wsSegment, WebSocketMessageType.Text, true, CancellationToken.None).Wait();
+                        } else {
+                            try { ws.Abort(); } catch { }
+                            _webSockets.Remove(ws);
+                        }
+                    } catch {
+                        try { ws.Abort(); } catch { }
+                        _webSockets.Remove(ws);
+                    }
+                }
+            }
+        }
+
+        // Mapeo de eventos Samantha -> Broadcast
+        private void Samantha_EventDetectedInstructions(object sender, EventArgs e) {
+            Broadcast("detectedInstructions", "{\"message\":\"detected\"}");
+        }
+
+        private void Samantha_EventListening(object sender, EventArgs e) {
+            Broadcast("listening", "{\"message\":\"listening\"}");
+        }
+
+        private void Samantha_EventWordRecognized(object sender, EventArgs e) {
+            Broadcast("wordRecognized", "{\"message\":\"wordRecognized\"}");
+        }
+
+        private void Samantha_EventTimeRemaining(object sender, EventArgs e) {
+            try {
+                var aux = (long)sender;
+                Broadcast("timeRemaining", $"{{\"remaining\":{aux}}}");
+            } catch {
+                Broadcast("timeRemaining", "{\"remaining\":0}");
+            }
+        }
+    }
+}
+--------------------------------------------
+FormSamantha.cs
+
+using SamanthaDJ.Interface;
+using SamanthaX.ServiceWF.LocalSocket;
+using System;
+using System.Windows.Forms;
+
+namespace SamanthaX.ServiceWF {
+    public partial class FormMain : Form {
+        private SocketBridge _socketBridge;
+
+        public FormMain() {
+            InitializeComponent();
+            this.FormClosing += FormMain_FormClosing;
+        }
+
+        private void FormMain_Load(object sender, EventArgs e) {
+            notifyIconSS.Visible = true;
+            this.WindowState = FormWindowState.Minimized;
+
+            #region Samantha
+
+            if (!Samantha.SamanthaRun) {
+
+                Samantha.Username = "";
+                Samantha.Password = "";
+                Samantha.CultureInfo = "es-ES";
+                Samantha.UICultureInfo = "es-ES";
+                Samantha.CultureSpeech = "es-MX";
+                Samantha.PathLog = "C:\\SamanthaX\\LogFile";
+                Samantha.GeneratepaParameterLog = true;
+                Samantha.GeneratepaRunEventLog = true;
+                Samantha.GeneratepaSpeechRecognizedEventLog = true;
+                Samantha.Initialize();
+                Samantha.Run();
+
+                if (!Samantha.IsEventDetectedInstructionsRegistered48(SC_TimeRemainingFunction)) {
+                    Samantha.EventTimeRemaining += new EventHandler(SC_TimeRemainingFunction);
+                }
+
+                if (!Samantha.IsEventDetectedInstructionsRegistered48(SC_ListeningFunction)) {
+                    Samantha.EventListening += new EventHandler(SC_ListeningFunction);
+                }
+
+                if (!Samantha.IsEventDetectedInstructionsRegistered48(SC_SamanthaListeningFunction)) {
+                    Samantha.EventSamanthaListening += new EventHandler(SC_SamanthaListeningFunction);
+                }
+
+                if (!Samantha.IsEventDetectedInstructionsRegistered48(SC_WordRecognizedFunction)) {
+                    Samantha.EventWordRecognized += new EventHandler(SC_WordRecognizedFunction);
+                }
+
+                if (!Samantha.IsEventDetectedInstructionsRegistered48(SC_EventDetectedInstructions)) {
+                    Samantha.EventDetectedInstructions += new EventHandler(SC_EventDetectedInstructions);
+                }
+
+                Samantha.SamanthaRun = true;
+            }
+
+            #endregion Samantha
+
+            // Iniciar bridge: TCP tradicional en 127.0.0.1:5004 y WebSocket en http://localhost:5003/
+            try {
+                _socketBridge = new SocketBridge("127.0.0.1", 5004, "http://localhost:5003/");
+                _socketBridge.Start();
+            } catch (Exception) {
+                // Registrar si es necesario
+            }
+        }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e) {
+            try {
+                _socketBridge?.Stop();
+            } catch { }
+        }
+
+        private void buttonLoad_Click(object sender, EventArgs e) {
+            this.Hide();
+            notifyIconSS.Visible = true;
+        }
+
+        private void notifyIconSS_MouseDoubleClick(object sender, MouseEventArgs e) {
+            notifyIconSS.Visible = false;
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        #region Samantha
+
+        private void SC_TimeRemainingFunction(object sender, EventArgs e) {
+            long aux = (long)sender;
+        }
+
+        private async void SC_ListeningFunction(object sender, EventArgs e) {
+
+        }
+
+        private async void SC_SamanthaListeningFunction(object sender, EventArgs e) {
+
+        }
+
+        private async void SC_WordRecognizedFunction(object sender, EventArgs e) {
+
+        }
+
+        private async void SC_EventDetectedInstructions(object sender, EventArgs e) {
+
+        }
+
+        #endregion Samantha
+    }
+}
+--------------------------------------------
+samanthaSocket.js
+
+window.samanthaSocket = {
+  start: function (dotNetRef, url) {
+    if (!url) url = "ws://localhost:5003/";
+    try {
+      const ws = new WebSocket(url);
+      ws.onopen = function () { console.log("WebSocket opened"); };
+      ws.onerror = function (err) { console.error("WebSocket error", err); };
+      ws.onmessage = function (evt) {
+        try {
+          const msg = JSON.parse(evt.data);
+          const evName = msg.event || "message";
+          const data = JSON.stringify(msg.data || {});
+          const method = "On" + evName.charAt(0).toUpperCase() + evName.slice(1);
+          dotNetRef.invokeMethodAsync(method, data).catch(function () {
+            dotNetRef.invokeMethodAsync("OnGenericEvent", evt.data).catch(function () { });
+          });
+        } catch (e) {
+          dotNetRef.invokeMethodAsync("OnGenericEvent", evt.data).catch(function () { });
+        }
+      };
+      window.__samanthaSocket = ws;
+    } catch (e) {
+      console.error(e);
+    }
+  },
+  stop: function () {
+    if (window.__samanthaSocket) {
+      window.__samanthaSocket.close();
+      window.__samanthaSocket = null;
+    }
+  },
+  send: function (msg) {
+    if (window.__samanthaSocket && window.__samanthaSocket.readyState === 1) {
+      window.__samanthaSocket.send(msg);
+    }
+  }
+};
+--------------------------------------------
+SamanthaSocket.razor
+
+@inject IJSRuntime JS
+@implements IDisposable
+
+<h3>Samantha (WebSocket)</h3>
+<div>
+  <p>Último evento: @message</p>
+  <button @onclick="SendPing">Enviar ping</button>
+</div>
+
+@code {
+  private DotNetObjectReference<SamanthaComponent> _dotNetRef;
+  private string message = "";
+
+  protected override async Task OnInitializedAsync() {
+    _dotNetRef = DotNetObjectReference.Create(new SamanthaComponent(OnEvent));
+    await JS.InvokeVoidAsync("samanthaSocket.start", _dotNetRef, "ws://localhost:5003/");
+  }
+
+  public void Dispose() {
+    JS.InvokeVoidAsync("samanthaSocket.stop");
+    _dotNetRef?.Dispose();
+  }
+
+  private Task SendPing() {
+    return JS.InvokeVoidAsync("samanthaSocket.send", "{\"type\":\"ping\",\"ts\":\"" + DateTime.UtcNow.ToString("o") + "\"}").AsTask();
+  }
+
+  private void OnEvent(string evt) {
+    message = evt;
+    InvokeAsync(StateHasChanged);
+  }
+
+  private class SamanthaComponent {
+    private readonly Action<string> _onEvent;
+    public SamanthaComponent(Action<string> onEvent) { _onEvent = onEvent; }
+
+    [JSInvokable("OnDetectedInstructions")]
+    public Task OnDetectedInstructions(string data) { _onEvent($"detected: {data}"); return Task.CompletedTask; }
+
+    [JSInvokable("OnListening")]
+    public Task OnListening(string data) { _onEvent($"listening: {data}"); return Task.CompletedTask; }
+
+    [JSInvokable("OnWordRecognized")]
+    public Task OnWordRecognized(string data) { _onEvent($"word: {data}"); return Task.CompletedTask; }
+
+    [JSInvokable("OnTimeRemaining")]
+    public Task OnTimeRemaining(string data) { _onEvent($"time: {data}"); return Task.CompletedTask; }
+
+    [JSInvokable("OnGenericEvent")]
+    public Task OnGenericEvent(string data) { _onEvent($"evt: {data}"); return Task.CompletedTask; }
+  }
+}
+--------------------------------------------
+Qué cambié y por qué
+•	Añadí SocketBridge que expone:
+•	Un servidor TCP tradicional (para clientes nativos) mediante TcpListener.
+•	Un servidor WebSocket implementado con HttpListener + AcceptWebSocketAsync (sin usar websocket-sharp).
+•	Ambos reenvían los eventos de Samantha serializados en JSON.
+•	Modifiqué FormSamantha.cs para iniciar/detener el SocketBridge.
+•	Añadí helper JS y componente Blazor para consumir WebSocket desde Blazor WASM.
+Consideraciones finales / recomendaciones
+•	Si sólo necesitas navegador → podrías suprimir el TCP si no lo necesitas.
+•	Si el HttpListener no arranca por permisos en Windows, ejecuta la app con privilegios o registra
+    la URL (netsh http add urlacl) para el prefijo.
+•	Para producción usa WSS (TLS) y autenticación; HttpListener + WebSocket en localhost está bien
+    para desarrollo.
+•	Si prefieres, puedo:
+•	Añadir reconexión automática en el cliente JS.
+•	Implementar la versión SignalR/ASP.NET Core (más robusta para producción).
+•	Generar el comando netsh para registrar el prefijo HTTP si recibes error de permisos.
+
+¿Quieres que implemente reconexión en el cliente JS o que añada la instrucción netsh para registrar el prefijo HTTP?
+
+--------------------------------------------
+--------------------------------------------
+--------------------------------------------
+--------------------------------------------

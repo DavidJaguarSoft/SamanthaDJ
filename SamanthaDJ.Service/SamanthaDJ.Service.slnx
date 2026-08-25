@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="../SamanthaDJ.Core/SamanthaDJ.Core.csproj" Id="146b1b30-3959-405a-8cdc-06d255533c53" />
+  <Project Path="../SamanthaDJ.Interface/SamanthaDJ.Interface/SamanthaDJ.Interface.csproj" Id="fa7af0c6-211d-4bf4-92a5-e76bb8bd525b" />
+  <Project Path="../SamanthaDJ.Socket/SamanthaDJ.Socket.csproj" Id="4245cd28-00fe-449f-8b44-c022222059d0" />
+  <Project Path="../SamanthaX.Model/SamanthaX.Model.csproj" Id="d7110236-5842-4563-96ff-62978fc110e0" />
+  <Project Path="SamanthaDJ.Service/SamanthaDJ.Service.csproj" Id="3aa1c866-d29b-473a-8979-c0391b4e1907" />
+</Solution>

@@ -1,0 +1,10 @@
+﻿--
+Sábado 28 marzo 2026
+----------------------------------------------------------
+PARTES DE LA GRAMATICA - Clases
+
+Según las normas tradicionales de la Real Academia Española, éstas son nueve:
+	Sustantivo, Adjetivo, Artículo, Pronombre, Verbo, Adverbio,
+	Preposición, Conjunción, Interjección.
+Partes variables De estas nueve partes, cinco son variables, es decir,
+experimentan cambios en su estructura.

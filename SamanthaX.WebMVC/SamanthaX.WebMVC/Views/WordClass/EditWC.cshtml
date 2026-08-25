@@ -1,0 +1,122 @@
+﻿@model SamanthaX.WebMVC.Models.System.WordClassModel
+@{
+    ViewBag.Title = "Word Class Create/Edition";
+    Layout = "~/Views/Shared/_LayoutSystem.cshtml";
+}
+
+<main>
+    <div class="row ms-4">
+        <div class="col-sm-12">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    @{ 
+                        string strTitle = string.Empty;
+                        if (Model.WordClassId == 0) {
+                            strTitle = "Create Word Class";
+                        } else {
+                            strTitle = "Edit Word Class";
+                        }
+                    }
+                    <h4>@strTitle</h4>
+                </div>
+                <div class="panel-body">
+                    <form action="@Url.Action("EditWC", "WordClass")" method="post">
+                        <div class="form-group" style="display:none">
+                            <label>Id</label>
+                            @Html.TextBox(
+                                "WordClassId",
+                                null,
+                                new {
+                                    @class = "form-control",
+                                    @readonly = "true"
+                                })
+                        </div>
+                        <div class="form-group">
+                            <label>Code</label>
+                            @Html.TextBox(
+                                "Code",
+                                null,
+                                new {
+                                    @class = "form-control",
+                                    @placeholder = "Code",
+                                    @maxlength = "20",
+                                    onkeyup = "ConvertToUppercase(this)",
+                                    onkeypress = "return NoAcceptSpaceKey(event)"
+                                })
+                            <div style="color:red;">@Html.ValidationMessage("Code")</div>
+                            <div class="form-text" style="font-size:10px">
+                                Code only accepts Uppercase and does not accept spaces, instead use underscore '_'
+                            </div>
+                            <br />
+                        </div>
+                        <div class="form-group">
+                            <label>Name</label>
+                            @Html.TextBox(
+                                "Name",
+                                null,
+                                new {
+                                    @class = "form-control",
+                                    @placeholder = "Name",
+                                    @maxlength = "30",
+                                })
+                            <div style="color:red;">@Html.ValidationMessage("Name")</div>
+                            <br />
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            @Html.TextArea(
+                                "Description",
+                                null,
+                                new {
+                                    @class = "form-control",
+                                    @placeholder = "Description",
+                                    @maxlength = "2000",
+                                    rows = "4"
+                                })
+                        </div>
+                        <div class="form-group">
+                            <label>Example</label>
+                            @Html.TextArea(
+                                "Example",
+                                null,
+                                new {
+                                    @class = "form-control",
+                                    @placeholder = "Examples",
+                                    @maxlength = "3000",
+                                    rows = "5"
+                                })
+                        </div>
+
+                        @if (ViewData["ErrorMessageSX"] != null) {
+                            <div class="mt-2">
+                                <div class="alert alert-warning" role="alert">
+                                    @ViewData["ErrorMessageSX"]
+                                </div>
+                            </div>
+                        }
+
+                        @*Buttons*@
+                        <button type="submit" class="btn btn-primary mt-4">Save</button>
+                        <a class="btn btn-danger mt-4" href="@Url.Action("CatalogWC","WordClass")">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+
+    function ConvertToUppercase(strValue) {
+        strValue.value = strValue.value.toUpperCase();
+    }
+
+    function NoAcceptSpaceKey(e) {
+        var codigo = e.keyCode || e.which;
+        console.log(e.key);
+        if (codigo === 32) {
+            console.log("_");
+            return false;
+        }
+    }
+</script>

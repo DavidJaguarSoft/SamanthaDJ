@@ -1,0 +1,119 @@
+﻿@model List<SamanthaX.Model.Entity.RecognizedWordEn>
+@{
+    ViewBag.Title = "Recognized Word Catalog";
+    Layout = "~/Views/Shared/_LayoutSystem.cshtml";
+}
+
+<main>
+    <div class="row ms-4">
+        <div class="col-sm-12">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <h4>@ViewBag.Title</h4>
+                </div>
+                <div class="panel-body">
+                    <a class="btn btn-primary" href="@Url.Action("EditRW", "RecognizedWord", new { recognizedWordId = 0})">
+                        New Word to Recognize
+                    </a>
+                    <hr />
+                    @if (ViewData["ErrorMessageSX"] != null) {
+                        <div class="mt-2">
+                            <div class="alert alert-warning" role="alert">
+                                @ViewData["ErrorMessageSX"]
+                            </div>
+                        </div>
+                    }
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="display:none;">Id</th>
+                                    <th>Code</th>
+                                    <th>Word Class</th>
+                                    <th>Related Words</th>
+                                    <th>Registration</th>
+                                    <th>Enable</th>
+                                    <th style="width:180px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(Model == null) {
+                                    <div class="mt-2">
+                                        <div class="alert alert-danger" role="alert">
+                                            <h3>Sin datos para mostrar</h3>
+                                        </div>
+                                    </div>
+                                } else {
+                                    foreach(SamanthaX.Model.Entity.RecognizedWordEn item in Model) {
+                                        <tr>
+                                            @{
+                                                var colortext = "";
+                                                string classbutton = "";
+                                                string labelbutton = "";
+                                                if(item.Enabled) {
+                                                    colortext = "black";
+                                                    classbutton = "btn btn-danger";
+                                                    labelbutton = "Disable";
+                                                } else {
+                                                    colortext = "red";
+                                                    classbutton = "btn btn-dark";
+                                                    labelbutton = "Enable";
+                                                }
+                                            }
+                                            <td style="color:@colortext; display:none">@item.RecognizedWordId</td>
+                                            <td style="color:@colortext">@item.Code</td>
+                                            <td style="color:@colortext">@item.WordClass</td>
+                                            <td style="color:@colortext">@item.RelatedWords</td>
+                                            <td style="color:@colortext">@item.DateRegistration</td>
+                                            <td style="color:@colortext">@item.Enabled</td>
+                                            <td>
+                                                <a class="btn btn-success"
+                                                   href="@Url.Action("EditRW","RecognizedWord", new { recognizedWordId = item.RecognizedWordId})">
+                                                    Edit
+                                                </a>
+                                                <a class="@classbutton"
+                                                    href="@Url.Action("EnableRW","RecognizedWord", new { recognizedWordId = item.RecognizedWordId})">
+                                                    @labelbutton
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="MyModalTest" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Procesando información !</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Espere por favor ...</p>
+                </div>
+                <div class="modal-footer">
+                    <button
+                            type="button"
+                            href="@Url.Action("WordClassDelete","System", new { wordClassId = Session["Hola"]})"
+                            class="btn btn-primary">
+                        Si
+                    </button>
+                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal" aria-label="Close">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function Ejecutar(number) {
+        $('#MyModalTest').modal('show');
+        Session["Hola"] = number;
+    }
+</script>

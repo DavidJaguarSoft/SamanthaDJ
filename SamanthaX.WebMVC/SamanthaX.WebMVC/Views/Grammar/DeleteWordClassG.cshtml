@@ -1,0 +1,50 @@
+﻿@model SamanthaX.Model.Entity.GrammarBuilderEn
+@{
+    ViewBag.Title = "Delete Word Class";
+    Layout = "~/Views/Shared/_LayoutSystem.cshtml";
+}
+
+<main>
+    <div class="col-md-4"></div>
+
+    <div class="col-md-4">
+        <form action="@Url.Action("DeleteWordClassG", "Grammar", new {processWordClassId = Model.WordClassId, origin = "DELWC"})" method="post">
+            <h5>Are you sure you want to delete the Word Class</h5>
+            <h5>@Model.WordClassCode - @Model.WordClassName ?</h5>
+            <div class="row">
+                <button type="submit"
+                        class="btn btn-danger"
+                        style="width:100px;">
+                    Delete
+                </button>
+                <div style="width:100px;">
+                    <div class="col">
+                        <button class="btn btn-dark"
+                                type="button"
+                                onclick="Back()">
+                            Back
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        @if (ViewData["ErrorMessageSX"] != null) {
+            <div class="mt-2">
+                <div class="alert alert-warning" role="alert">
+                    @ViewData["ErrorMessageSX"]
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-md-4"></div>
+</main>
+
+<script>
+    function Back() {
+        var myMethod = "DELWC";
+        window.location.href = '@Url.Action("EditG", "Grammar")'
+            + '?processWordClassId=0'
+            + '&origin=' + myMethod;
+    }
+</script>

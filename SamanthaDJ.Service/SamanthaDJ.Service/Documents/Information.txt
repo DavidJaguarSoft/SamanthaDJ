@@ -1,0 +1,278 @@
+﻿
+Blazor DataGrid in .NET 8
+https://www.youtube.com/watch?v=ryA2r1m5f8M
+    
+Blazor - Paginación, Filtrado y Reordenamiento Fácil con QuickGrid
+https://www.youtube.com/watch?v=V7UtyPXxd9c
+    
+Sistema de Venta en Blazor y NET 7 - ✅ Código Fuente ✅
+https://www.youtube.com/watch?v=dNq3A-EtOdk
+
+Net Core Runtime
+https://dotnet.microsoft.com/es-es/download/dotnet
+
+SYSTEM TRAY
+Los iconos en la parte inferior derecha dependen del sistema:
+en Windows es la bandeja del sistema (system tray)
+o área de notificación (reloj, red, volumen)
+
+SingletonSean
+Iconos de la bandeja del sistema (menús contextuales y notificaciones) - EASY WPF (.NET CORE)
+https://www.youtube.com/watch?v=8NuoBe1HS0U
+xmlns:viewmodels="clr-namespace:SamanthaDJ.ServiceWPF.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:NotifyViewModel}"
+
+Custom Notification in WPF || With Source Code
+Code Crunch
+https://www.youtube.com/watch?v=9YfKULQe254
+WPF-UI__Notification-1-main.zip
+
+----------------------------------------------------------------------------
+SYSTEM TRAY - 14 mar 2026
+
+Ruta para iniciar el servicio al iniciar Windows:
+	Ejecutar el Sistem Tray al iniciar Windows.
+	C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup
+
+Si windows bloquea la aplicacion de escritorio:
+	* Ir a "Seguridad de windows
+	* Control de aplicaciones y navegador
+	* Control inteligente de aplicaciones
+	* Configuracion de Control inteligente de aplicaciones
+	* <Desactivar>
+
+Configurar el paquete de idioma en Windows:
+	- 	Ir a inicio de Windows
+	-	Ir a idiomas
+	-	Agregar idioma: Español(Mexico)
+		* Ir a "..." (Mas opciones)
+		* Ira "Opciones de Idioma"
+		* <Instalar todas las opciones>
+	-	Agregar idioma: Español(España)
+		* Ir a "..." (Mas opciones)
+		* Ira "Opciones de Idioma"
+		* <Instalar todas las opciones>
+
+Habilitar el Microfono:
+	- Ir a inicio de windows
+	- Teclear "Microfono"
+	- Habilitar "Acceo al microfono"
+	- Habilitar "Permitir que las aplicaciones accedan al microfono"
+	- Habilitar "Permitir que las aplicaciones de escritorio accedan a tu microfono"
+
+NOTA: El uso de comillas (") es ilustrativo, no debe teclearlas.
+----------------------------------------------------------------------------
+Sábado 14 de marzo de 2026 a las 19:50 horas, Samantha Habló.
+Estando en un equipo de producción (fuera de un ambiente de desarrollo),
+Samantha habló...
+No pude evitar llorar... creo que estoy ebrio...(no tanto)
+Fue como terminar una laaarga jornada (11 años) y entrar en shock...
+... fue un sentimiento hermoso...
+----------------------------------------------------------------------------
+INSTALADOR. 24 marzo 2026
+
+ Programando en C# con Visual Studio .NET #30 - Cómo crear un instalador y un ejecutable (.exe)
+ Cómo te explico? {CTE}
+ https://www.youtube.com/watch?v=DPxdVKKmrzo
+
+ COMO CREAR INSTALADOR (Setup.exe) en VISUAL STUDIO 2019 |Microsoft Visual Studio Installer Projects
+ Soluciones Tecnológicas
+ https://www.youtube.com/watch?v=c2NmtvENu3s
+
+ ----------------------------------------------------------------------------------------------------
+ ----------------------------------------------------------------------------------------------------
+Quiero hacer un instalador para "SamanthaDJ.ServiceWPF" (system tray) con los siguientes criterios:
+1) Que sea descargable desde una url de internet.
+2) Despues de descargar que haga la instlación.
+3) Que copie un archivo json predefinido (SamanthaConfig.json) en la ruta "C:\DavidJaguarSoft\SamanthaDJ".
+4) Cuando finalice la instalación, que ejecute el servicio (SamanthaDJ.ServiceWPF) y se quede
+    corriendo en el system tray.
+5) Que el servicio se inicie automáticamente al iniciar Windows.
+6) Que el servicio se pueda desinstalar desde "Agregar o quitar programas" de Windows.
+7) Que el servicio se pueda actualizar desde el system tray (con un menú contextual).
+
+Estrategia breve
+•	Usar un instalador nativo de Windows (recomendado: Inno Setup por simplicidad; alternativa: 
+    WiX/MSI o Visual Studio Installer Projects).
+•	El instalador debe: instalar la app, crear carpeta C:\DavidJaguarSoft\SamanthaDJ y copiar
+    SamanthaConfig.json, registrar entrada de desinstalación (Add/Remove Programs), crear inicio
+    automático (acceso directo en Startup o clave Run) y ejecutar la app al terminar.
+•	Para actualización desde el tray: implementar en la app un verificador que descargue el nuevo
+    instalador desde una URL segura y lo ejecute con flags silenciosos; el instalador debe soportar
+    actualización in-situ.
+•	Requerimientos: el instalador debe ejecutarse con privilegios elevados para escribir en C:\ y
+    crear entradas en HKLM; firmar el instalador es recomendable.
+Recomendación concreta: Inno Setup
+•	Hostear el .exe del instalador en su servidor o GitHub Releases (URL descargable).
+•	Flags para instalación silenciosa/actualización:
+•	Instalación normal: ejecutar MySetup.exe
+•	Actualización silenciosa: MySetup.exe /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
+Ejemplo de script Inno Setup (esqueleto)
+
+[Setup]
+AppName=SamanthaDJ.ServiceWPF
+AppVersion=1.0.0
+DefaultDirName={pf}\SamanthaDJ\ServiceWPF
+DefaultGroupName=SamanthaDJ
+OutputBaseFilename=SamanthaDJ_Setup
+Compression=lzma2
+SolidCompression=yes
+PrivilegesRequired=admin
+
+[Files]
+Source: "Output\SamanthaDJ.ServiceWPF.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "SamanthaConfig.json"; DestDir: "C:\DavidJaguarSoft\SamanthaDJ"; Flags: overwritereadonly createallsubdirs
+
+[Icons]
+Name: "{commonstartup}\SamanthaDJ"; Filename: "{app}\SamanthaDJ.ServiceWPF.exe"; WorkingDir: "{app}"
+
+[Run]
+Filename: "{app}\SamanthaDJ.ServiceWPF.exe"; Description: "Iniciar SamanthaDJ"; Flags: nowait postinstall skipifsilent
+
+[UninstallDelete]
+Type: filesandordirs; Name: "C:\DavidJaguarSoft\SamanthaDJ"
+
+Notas: PrivilegesRequired=admin fuerza elevación; el instalador creará entrada en Agregar/Quitar Programas automáticamente.
+Implementar actualización desde el tray (C#)
+•	Verificar versión en un endpoint JSON; si hay nueva versión, descargar installerUrl y lanzar con flags silenciosos.
+•	Ejemplo simplificado:
+
+async Task DownloadAndRunInstallerAsync(string url) {
+    var tmp = Path.Combine(Path.GetTempPath(), "SamanthaDJ_Update.exe");
+    using (var http = new HttpClient()) {
+        var data = await http.GetByteArrayAsync(url);
+        await File.WriteAllBytesAsync(tmp, data);
+    }
+    var pi = new ProcessStartInfo(tmp, "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART") { UseShellExecute = true, Verb = "runas" };
+    Process.Start(pi);
+    Application.Current.Shutdown(); // si necesita cerrarse antes de actualizar
+}
+
+•	El menú contextual del tray puede exponer “Buscar actualizaciones” que llama a la función anterior.
+Permitir desinstalación desde Agregar o quitar programas
+•	Inno Setup registra la aplicación en el registro para que aparezca y desinstale correctamente
+    (automático si AppId/AppName definidos).
+•	Asegúrese de limpiar C:\DavidJaguarSoft\SamanthaDJ en el desinstalador o ofrecer opción para
+    conservar datos.
+Consideraciones finales y siguientes pasos
+•	Decida herramienta (Inno Setup recomendado). Yo puedo generar el script completo y el instalador
+    si me provee: ruta del .exe de la app, SamanthaConfig.json y URL donde hospedarlo.
+•	Verifique permisos UAC y firma digital para evitar bloqueos por SmartScreen. Si desea, genero el
+    script Inno completo y el código del menú contextual tray para integrar la actualización.
+    ¿Quiere que lo haga?
+----------------------------------------------------------------------------------------------------
+De la consulta anterior como hago que una vez instalado mi system tray, al iniciar windows e iniciar
+mi programa que automaticamente detecte si hay una actualizacion, y de ser así, instalar.
+
+Plan corto
+•	En el arranque de tu aplicación (antes o justo después de crear el icono de tray) consulta un
+    endpoint JSON que publique la última versión y la URL del instalador.
+•	Si la versión remota > versión local, descarga el instalador a un archivo temporal, arráncalo
+    con los flags de instalación silenciosa/elevada y cierra tu app para permitir que el instalador
+    reemplace los binarios.
+•	El instalador (Inno Setup o MSI) debe soportar actualización in-situ (/VERYSILENT para Inno) y
+    registrar/desregistrar la app en Agregar o quitar programas.
+•	Ejecuta la verificación con pequeño retraso al inicio (p. ej. 5–10 s) para asegurar red y UI cargada.
+Qué añadir en tu proyecto
+1.	Endpoint JSON esperado (ejemplo):
+•	URL: https://mi-servidor/updates/latest.json
+•	Contenido: {"version":"1.2.3.0","installerUrl":"https://mi-servidor/installer/SamanthaDJ_Setup.exe",
+    "notes":"Correcciones"}
+2.	Código de ejemplo (C# .NET 4.7.1). Pegar en Tools/Updater.cs y ajustar nombres/URLs. Requiere
+    Newtonsoft.Json (instalar NuGet si no existe).
+
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Net.Http;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows;
+using Newtonsoft.Json;
+
+public class UpdateInfo { public string version { get; set; } public string installerUrl { get; set; } public string notes { get; set; } }
+
+public static class Updater
+{
+    private static readonly HttpClient _http = new HttpClient();
+
+    public static Version GetLocalVersion()
+    {
+        var asm = Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
+        return asm.GetName().Version ?? new Version(0,0,0,0);
+    }
+
+    public static async Task CheckAndInstallIfAvailableAsync(string metadataUrl, bool autoInstall = true)
+    {
+        try
+        {
+            // Delay opcional para dejar que el sistema termine de iniciarse
+            await Task.Delay(TimeSpan.FromSeconds(5));
+
+            var json = await _http.GetStringAsync(metadataUrl);
+            var info = JsonConvert.DeserializeObject<UpdateInfo>(json);
+            if (info == null || string.IsNullOrWhiteSpace(info.version) || string.IsNullOrWhiteSpace(info.installerUrl))
+                return;
+
+            var remote = new Version(info.version);
+            var local = GetLocalVersion();
+            if (remote <= local) return;
+
+            // Si no autoInstall, mostrar notificación/preguntar al usuario aquí
+            if (!autoInstall)
+            {
+                // mostrar notificación en tray: "Actualización disponible"
+                return;
+            }
+
+            // Descargar installer a temp
+            var tmpFile = Path.Combine(Path.GetTempPath(), Path.GetFileName(new Uri(info.installerUrl).LocalPath));
+            using (var resp = await _http.GetAsync(info.installerUrl))
+            {
+                resp.EnsureSuccessStatusCode();
+                var bytes = await resp.Content.ReadAsByteArrayAsync();
+                File.WriteAllBytes(tmpFile, bytes);
+            }
+
+            // Ejecutar instalador con elevación; usar flags de tu instalador (Inno Setup example)
+            var args = "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART";
+            var psi = new ProcessStartInfo(tmpFile, args)
+            {
+                UseShellExecute = true,
+                Verb = "runas" // fuerza UAC
+            };
+            Process.Start(psi);
+
+            // Cerrar la app para permitir actualización
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                try { Application.Current.Shutdown(); } catch { Environment.Exit(0); }
+            });
+        }
+        catch
+        {
+            // log/ignorar errores de red
+        }
+    }
+}
+
+3.	Dónde llamar esto
+•	En App.xaml.cs en OnStartup(StartupEventArgs) o en el inicializador del tray, llama: await Updater.
+    CheckAndInstallIfAvailableAsync("https://mi-servidor/updates/latest.json", true); (Si OnStartup(StartupEventArgs)
+    no soporta async directamente, lanza un task sin bloquear la UI.)
+Consideraciones importantes
+•	El instalador debe soportar actualización silenciosa y cerrar/esperar procesos si necesita reemplazar ejecutables.
+•	Al usar Verb="runas" aparecerá UAC si no está firmado; si quieres 100% silencioso sin UAC, necesitas instalar
+    como servicio SYSTEM o usar un servicio updater con privilegios.
+•	Manejo UX: puedes notificar al usuario antes de descargar/instalar o permitir “auto-install” configurable.
+•	Asegura que latest.json esté servido por HTTPS y que el instalador esté firmado para evitar bloqueos SmartScreen.
+Resumen (menos de 150 palabras) Implementa en el arranque una comprobación contra un JSON público que indique
+la versión y URL del instalador. Si la versión remota es mayor, descarga el instalador a %TEMP%, ejecútalo con
+flags silenciosos y eleva (runas) y cierra la app para que el instalador reemplace archivos.
+El instalador (Inno/Msi) debe soportar actualización in-situ y registrar la app para desinstalación.
+Necesitas que el instalador pueda ejecutarse en modo silencioso y preferiblemente firmarlo para evitar UAC/SmartScreen
+problemas. ¿Quieres que cree el código exacto dentro de Tools/Updater.cs y el script Inno Setup adaptado a tu proyecto?
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+
+

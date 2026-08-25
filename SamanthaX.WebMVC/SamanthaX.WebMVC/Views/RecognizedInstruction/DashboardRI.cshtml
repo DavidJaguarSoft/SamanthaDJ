@@ -1,0 +1,100 @@
+﻿@model List<SamanthaX.Model.Entity.RecognizedInstructionEn>
+@{
+    ViewBag.Title = "Recognized Instruction Dashboard";
+    Layout = "~/Views/Shared/_LayoutSystem.cshtml";
+}
+
+<main>
+    <div class="row ms-4">
+        <div class="col-sm-12">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <h4>@ViewBag.Title</h4>
+                </div>
+                <div class="panel-body">
+                    <a class="btn btn-primary"
+                       href="@Url.Action(
+                            "EditRI",
+                            "RecognizedInstruction",
+                            new { RecognizedInstructionId = 0, Origin="CREATE"}
+                        )">
+                        Add Instruction
+                    </a>
+                    <hr />
+                    @if (ViewData["ErrorMessageSX"] != null) {
+                        <div class="mt-2">
+                            <div class="alert alert-warning" role="alert">
+                                @ViewData["ErrorMessageSX"]
+                            </div>
+                        </div>
+                    }
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="display:none;">Id</th>
+                                    <th>Code</th>
+                                    <th>Grammar</th>
+                                    <th>Instruction</th>
+                                    <th>Voice Processing</th>
+                                    <th>Registration</th>
+                                    <th>Enable</th>
+                                    <th style="width:180px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (SamanthaX.Model.Entity.RecognizedInstructionEn item in Model) {
+                                    <tr>
+                                        @{
+                                            var colortext = "";
+                                            string classbutton = "";
+                                            string labelbutton = "";
+                                            if(item.Enabled) {
+                                                colortext = "black";
+                                                classbutton = "btn btn-danger";
+                                                labelbutton = "Disable";
+                                            } else {
+                                                colortext = "red";
+                                                classbutton = "btn btn-dark";
+                                                labelbutton = "Enable";
+                                            }
+                                        }
+                                        <td style="color: @colortext; display:none">@item.RecognizedInstructionId</td>
+                                        <td style="color:@colortext">@item.Code</td>
+                                        <td style="color:@colortext">@item.Grammar</td>
+                                        <td style="color:@colortext">@item.Instruction</td>
+                                        <td style="color:@colortext">@item.VoiceProcessing</td>
+                                        <td style="color:@colortext">@item.DateRegistration</td>
+                                        <td style="color:@colortext">@item.Enabled</td>
+                                        <td>
+                                            <a class="btn btn-success"
+                                               href="@Url.Action(
+                                                    "EditRI",
+                                                    "RecognizedInstruction",
+                                                    new { RecognizedInstructionId = item.RecognizedInstructionId, Origin = "EDITING"}
+                                                )">
+                                                Edit
+                                            </a>
+                                            @if(item.Enabled) {
+                                                <a class="btn btn-danger"
+                                                   href="@Url.Action("EnableRI","RecognizedInstruction", new { RecognizedInstructionId = item.RecognizedInstructionId})">
+                                                    Disable
+                                                </a>
+                                            } else {
+                                                <a class="@classbutton"
+                                                   href="@Url.Action("EnableRI","RecognizedInstruction", new { RecognizedInstructionId = item.RecognizedInstructionId})">
+                                                    @labelbutton
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+

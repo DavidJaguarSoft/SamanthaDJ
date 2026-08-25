@@ -1,0 +1,134 @@
+﻿
+@model SamanthaX.WebMVC.Models.Home.RegistrationModel
+
+@{
+    ViewBag.Title = "Complete your Registration";
+}
+<main aria-labelledby="title">
+    22079694
+    <h3>Register</h3>
+    <div class="row">
+        <div class="danger">
+            @ViewBag.Error
+        </div>
+        <div class="col-md-4"></div>
+
+        <div class="col-md-4">
+            @using (Html.BeginForm("")) {
+                <form action="@Url.Content("~/Home/CompleteYourRegistration")" method="post">
+
+                    <div class="form-group">
+                        <label>Company</label>
+                        <br />
+                        @Html.TextBox(
+                            "Company",
+                            null,
+                            new {
+                                @class = "form-control",
+                                @placeholder = "Company name",
+                            })
+                        <br />
+                    </div>
+
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <br />
+                        @Html.TextBox("FirstName", null, new { @class = "form-control", @placeholder = "First Name" })
+                        <div style="color:red;">@Html.ValidationMessage("FirstName")</div>
+                        <br />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <br />
+                        @Html.TextBox("LastName", null, new { @class = "form-control", @placeholder = "Last Name" })
+                        <div style="color:red;">@Html.ValidationMessage("LastName")</div>
+                        <br />
+                    </div>
+
+                    <div class="form-group">
+                        <label>EMail</label>
+                        <br />
+                        @Html.TextBox(
+                            "EMail",
+                            null,
+                            new {
+                                @class = "form-control",
+                                @placeholder = "EMail",
+                                @readonly = "true"
+                            })
+                        <div style="color:red;">@Html.ValidationMessage("EMail")</div>
+                        <br />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+                        <br />
+                        @Html.TextBox("Password", null, new { @class = "form-control" })
+                        <div style="color:red;">@Html.ValidationMessage("Password")</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <br />
+                        @Html.TextBox("ConfirmPassword", null, new { @class = "form-control" })
+                        <div style="color:red;">@Html.ValidationMessage("ConfirmPassword")</div>
+                    </div>
+
+                    <div class="text-start">
+                        <ul class="navbar-nav ms-auto">
+                            <li class="text-decoration-underline">
+                                @Html.ActionLink(
+                                    "I already have an account",
+                                    "Login",
+                                    "Home",
+                                    new { area = "" },
+                                    new { @class = "nav-link" }
+                               )
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary" onclick="Ejecutar()">Register</button>
+                    </div>
+                    @if (ViewData["ErrorMessageSX"] != null) {
+                        <div class="mt-2">
+                            <div class="alert alert-warning" role="alert">
+                                @ViewData["ErrorMessageSX"]
+                            </div>
+                        </div>
+                    }
+                </form>
+            }
+
+        </div>
+
+        <div class="col-md-4"></div>
+    </div>
+
+    <div id="MyModalTest" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Procesando información !</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Espere por favor ...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script>
+    function Ejecutar() {
+        $('#MyModalTest').modal('show');
+        $.ajax({
+            url: '@Url.Action("~/home/CompleteYourRegistration")',
+            type: 'Post',
+            data: {},
+        });
+    }
+</script>

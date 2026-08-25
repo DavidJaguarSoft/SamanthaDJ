@@ -1,0 +1,11 @@
+﻿
+https://cloud.google.com/speech-to-text/v2/docs/custom-speech-models/overview?hl=es-419
+
+en-GB. Inglés (Reino Unido)
+en-US. Spanish (Traditional Sort) - Spain
+de-DE. Alemán (Alemania)
+es-ES. Español (España)
+fr-FR. Francés (Francia)
+ja-JP. Japonés (Japón)
+zh-CN. Chino (China)
+zh-TW. Chino (Taiwán)

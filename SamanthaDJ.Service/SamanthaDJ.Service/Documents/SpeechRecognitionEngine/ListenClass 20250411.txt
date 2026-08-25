@@ -1,0 +1,508 @@
+﻿
+using SupernovaX.Model.Entity.Sam;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Runtime.CompilerServices;
+using System.Runtime.Remoting.Messaging;
+using System.Speech.Recognition;
+using System.Speech.Synthesis;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace SamanthaYoung {
+    
+    public class Listen {
+
+        #region Variables
+
+        private string strBuildingInstruction;
+        //  Attributes to Properties
+        private SpeechRecognitionEngine REC = new SpeechRecognitionEngine();
+        private bool SamanthaVoice_AcceptCommand = false;
+        //Command voice oration to exceute administrative
+        private System.Timers.Timer timerRemaining;
+        private List<ValidWordEn> modelWordList = new List<ValidWordEn>();
+        private List<string> reservedWordlist = new List<string>();
+        //  Creo una variable donde almaceno todas las palabras que debo reconocer
+        private Choices WordsConcat = new Choices();
+        //  Contador de tics de espera para aceptar toda la instrucción
+        private long _CountRemaining = 0;
+        private List<RecognizedWordEn> recognizedWordListSX;
+        private ReservedWordEn reservedWordObject;
+        private SamanthaVoiceEn samanthaVoice;
+        private List<RecognizedInstructionEn> recognizedInstructionList;
+        private const int ticksRemaining = 50;
+
+        #endregion Variables
+
+        #region Public Events
+
+        public event EventHandler EventSamanthaActivated;
+        public event EventHandler EventSolutionFound;
+        public event EventHandler EventWordRecognized;
+        public event EventHandler EventWordRecognizedAccepted;
+        public event EventHandler EventInstructionArmed;
+        public event EventHandler EventTimeRemaining;
+
+        #endregion Public Events
+
+        #region Propierties
+
+        public bool ConnectedOk { get; set; }
+
+        #endregion Properties
+
+        #region Constructors
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <history>
+        /// </history>
+        /// 
+        public Listen(
+            List<RecognizedWordEn> rwListParam,
+            ReservedWordEn reservedWord,
+            SamanthaVoiceEn samanthaVoice,
+            List<RecognizedInstructionEn> recognizedInstructionList
+        ) {
+            strBuildingInstruction = string.Empty;
+            // -------------------------------------------------------------
+            this.recognizedWordListSX = rwListParam;
+            this.reservedWordObject = reservedWord;
+            this.samanthaVoice = samanthaVoice;
+            this.recognizedInstructionList = recognizedInstructionList;
+            _CountRemaining = 0;
+        }
+
+        #endregion Constructors
+
+        #region Speech Recognition Engine
+
+        #region SpeechRecognizedFunction
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <history>
+        /// </history>
+        /// 
+        public void SpeechRecognizedFunction(object sender, SpeechRecognizedEventArgs e) {
+            //if (e.Result.Confidence < 0.5) {
+            //    return;
+            //}
+            RecognitionResult WordAux;
+            WordAux = e.Result;
+
+            string strWord = WordAux.Text.ToLower();
+
+            switch(strWord) {
+                case "samanta":
+                    if(SamanthaVoice_AcceptCommand == true) {
+                        return;
+                    }
+                    //  Disponible para aceptar comandos / Begin capture CommandArmed
+                    SamanthaVoice_AcceptCommand = true;
+                    //  Tiempo de espera para aceptar todos los comandos
+                    _CountRemaining = ticksRemaining;
+
+                    //  Variable aleatoria
+                    Random _rnd = new Random();
+                    String[] samVoiceSplit = this.samanthaVoice.OrderYou.Split(',');
+                    //  La variable random solo acepta valores que van de cero hasta el numero de elementos de "yesSr"
+                    SpeechText(samVoiceSplit[_rnd.Next(0, samVoiceSplit.Length)]);
+                    EventSamanthaActivated(sender, e);
+                    break;
+                default:
+                    // Esta disponible para aceptar comandos ?
+                    if(SamanthaVoice_AcceptCommand == true) {
+                        /*
+                        ObjectWord myObjetc = new ObjectWord();
+                        myObjetc.TextToSearch = strWord;
+                        myObjetc.EventCompleted += new EventHandler(ProcessContinue);
+                        myObjetc.Initialize();
+                        myObjetc.Run();
+                        */
+
+                        //  Concatena la palabra y le aumenta una coma al final
+                        strBuildingInstruction = strBuildingInstruction + strWord + ",";
+
+                        //  Tiempo de espera para aceptar todos los comandos
+                        _CountRemaining = ticksRemaining;
+                        EventTimeRemaining(_CountRemaining, e);
+                        EventWordRecognizedAccepted(strWord, e);
+                    }
+                    EventWordRecognized(strWord, e);
+                    break;
+            }
+            string alternates = string.Empty;
+            foreach(var alt in e.Result.Alternates) {
+                var altConf = alt.Confidence;
+                string words = string.Empty;
+                if(alt.Words.Count > 1) {
+                    foreach(var word in alt.Words) {
+                        words = $"{words}_{word.Text}:{word.Confidence}";
+                    }
+                }
+                string straux = alt.Words.Count > 1 ? $"[_WORDS:{words}] ---" : string.Empty;
+                straux = string.Empty;
+                string myWORD = alt.Confidence > 0.65 ? $"*{alt.Text.ToUpper()}" : alt.Text.ToLower();
+                alternates = $"{alternates}  {myWORD}:{alt.Confidence}{straux}";
+            }
+            _ = WriteToFile("SpeechRecognized", $"{alternates.Trim()}");
+        }
+
+        #endregion SpeechRecognizedFunction
+
+        #region SpeechDetectedFunction
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <history>
+        /// </history>
+        /// 
+        void SpeechDetectedFunction(object sender, SpeechDetectedEventArgs e) {
+            //_ = WriteToFile("SpeechDetected", e.AudioPosition.ToString());
+        }
+
+        #endregion
+
+        #region SpeechRecognitionRejectedFunction
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <history>
+        /// </history>
+        /// 
+        void SpeechRecognitionRejectedFunction(object sender, SpeechRecognitionRejectedEventArgs e) {
+            _ = WriteToFile("SpeechRecognitionRejected", e.Result.Text);
+        }
+
+        #endregion
+
+        #region AudioSignalProblemOccurredFunction
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <history>
+        /// </history>
+        /// 
+        void AudioSignalProblemOccurredFunction(object sender, AudioSignalProblemOccurredEventArgs e) {
+            StringBuilder details = new StringBuilder();
+
+            details.AppendLine("Audio signal problem information:");
+            details.AppendFormat(
+              " Audio level/Position/Problem: {0} / {1} / {2}" + Environment.NewLine +
+              " Recognition engine audio position: {3}" + Environment.NewLine,
+              e.AudioLevel, e.AudioPosition, e.AudioSignalProblem, e.RecognizerAudioPosition);
+        }
+
+        #endregion
+
+        #endregion Speech Recognition Engine
+
+        #region timerRemaining_Tick
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <history>
+        /// </history>
+        /// 
+        private void timerRemaining_Tick(object sender, System.Timers.ElapsedEventArgs e) {
+            if (_CountRemaining > 0) {
+                _CountRemaining = _CountRemaining - 1;
+                EventTimeRemaining(_CountRemaining, e);
+            } else {
+                //  Tiempo agotado
+                //  Estuvo aceptando comandos (palabras) ?
+                if (SamanthaVoice_AcceptCommand == true) {
+                    SamanthaVoice_AcceptCommand = false;
+                    string strAux = strBuildingInstruction;
+                    //  Produce el evento para avisar que la Instrucción se ha terminado de construir
+                    EventInstructionArmed(sender, e);
+                    GetInstruction(strAux);
+                    strBuildingInstruction = String.Empty;
+                }
+            }
+        }
+
+        //  timerRemaining_Tick
+        #endregion
+
+        #region Methods
+
+        #region Run
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Run() {
+
+            //  Inicializo las propiedades de mi "Timer"
+            timerRemaining = new System.Timers.Timer();
+            timerRemaining.Enabled = true;
+            timerRemaining.Elapsed += new System.Timers.ElapsedEventHandler(timerRemaining_Tick);
+            timerRemaining.Interval = 100;  //Defualt: 100 milisegundos
+
+            #region RESERVED WORD
+
+            WordConcatFunction(reservedWordObject.SamanthaName);
+            WordConcatFunction(reservedWordObject.ExecuteRightNow);
+            WordConcatFunction(reservedWordObject.CancelCommand);
+            WordConcatFunction(reservedWordObject.IgnoredWords);
+
+            ReservedWordListFunction(reservedWordObject.SamanthaName);
+            ReservedWordListFunction(reservedWordObject.ExecuteRightNow);
+            ReservedWordListFunction(reservedWordObject.CancelCommand);
+            ReservedWordListFunction(reservedWordObject.IgnoredWords);
+
+            #endregion RESERVED WORD
+
+            //  Agrego palabras que debo detectar pero que ignorare mas tarde / Add Ignore Words
+            foreach(RecognizedWordEn rwItem in recognizedWordListSX) {
+                WordConcatFunction(rwItem.RelatedWords);
+                RecognizedWordFunction(rwItem);
+            }
+
+            //  The language for the grammar does not match the language of the speech recognizer.
+            //System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("es-MX");
+            //System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("es-MX");
+            //System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+            //System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en-US");
+            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("es-ES");
+            System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("es-ES");
+
+            //  Codigo no usado, dejado para referencia
+            /*
+            RecognizerInfo recognizerInfo = null;
+            foreach(RecognizerInfo ri in SpeechRecognitionEngine.InstalledRecognizers()) {
+                if((ri.Culture.TwoLetterISOLanguageName.Equals("es"))) {
+                    recognizerInfo = ri;
+                    break;
+                }
+            }
+            */
+
+            
+            GrammarBuilder Vocabulary = new GrammarBuilder();
+            Vocabulary.Culture = Thread.CurrentThread.CurrentCulture;
+            //Vocabulary.Culture = recognizerInfo.Culture;
+            Vocabulary.Append(WordsConcat);
+            
+            /*
+            GrammarBuilder grammarbuilder = new GrammarBuilder(WordsConcat);
+            //grammarbuilder.Culture = Thread.CurrentThread.CurrentCulture;
+            */
+            /*
+            Grammar dictation = new DictationGrammar();
+            dictation.Name = "Dictation Grammar";
+            */
+            try {
+                REC = new SpeechRecognitionEngine(new CultureInfo("es-MX"));
+                REC.LoadGrammar(new Grammar(Vocabulary));
+                //REC.LoadGrammar(new Grammar(grammarbuilder));
+                //REC.LoadGrammar(dictation);
+                REC.SetInputToDefaultAudioDevice();
+                REC.RecognizeAsync(RecognizeMode.Multiple);
+                //REC.InitialSilenceTimeout = TimeSpan.FromMilliseconds(5);
+
+                //
+                REC.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(SpeechRecognizedFunction);
+                REC.SpeechRecognitionRejected += new EventHandler<SpeechRecognitionRejectedEventArgs>(SpeechRecognitionRejectedFunction);
+                REC.SpeechDetected += new EventHandler<SpeechDetectedEventArgs>(SpeechDetectedFunction);
+                REC.AudioSignalProblemOccurred += new EventHandler<AudioSignalProblemOccurredEventArgs>(AudioSignalProblemOccurredFunction);
+
+                ConnectedOk = true;
+            } catch(Exception ex) {
+                ConnectedOk = false;
+            }
+        }
+
+        void WordConcatFunction(string strSplit) {
+            string[] listWord = strSplit.Split(',');
+            foreach(string item in listWord) {
+                WordsConcat.Add(item);
+            }
+        }
+
+        void ReservedWordListFunction(string strSplit) {
+            string[] listWord = strSplit.Split(',');
+            foreach(string item in listWord) {
+                reservedWordlist.Add(item);
+            }
+        }
+
+        void RecognizedWordFunction(RecognizedWordEn recognizedWord) {
+            string wordClass = recognizedWord.WordClass;
+            string codeWord = recognizedWord.Code;
+            string[] listWord = recognizedWord.RelatedWords.Split(',');
+            foreach(string item in listWord) {
+                ValidWordEn model = new ValidWordEn();
+                model.WordClass = wordClass;
+                model.CodeWord = codeWord;
+                model.ValueWord = item;
+                modelWordList.Add(model);
+            }
+        }
+
+        #endregion Run
+
+        public void GetInstruction(string strToSplit) {
+            //  We create the object (variable) "cSamanthaAnalizer" of class "Analizer"
+            //  -- Creamos el objeto (variable) "cSamanthaAnalizer" de la clase "Analizer"
+            Recognize cSamanthaAnalizer = new Recognize(recognizedInstructionList);
+
+            //  We create the object (variable) "cCommandVoice" of class "CommandVoice"
+            //  It determines the nature of each word (type of noun): Verb, Adjective, subject, pronoun, article, question, numerator, etc.
+            //  And save it in the structure (object) "cCommandVoice"
+            //  -- Creamos el objeto (variable) "cCommandVoice" de la clase "CommandVoice"
+            //  -- Determina la naturaleza de cada palabra (tipo de sustantivo): Verbo, Adjetivo, sujeto, pronombre, articulo, pregunta, numerador, etc
+            //  -- y la guardamos en la estructura (objeto) "cCommandVoice"
+            string result = string.Empty;
+            List<RecognizedInstructionEn> listRecognizedInstruction =
+                cSamanthaAnalizer.GetRecognizedInstructions(
+                    strToSplit,
+                    reservedWordlist,
+                    modelWordList,
+                    out result
+                );
+            //  If there were no mistakes then ...
+            //  -- Si no hubo Errores entonces ...
+            switch (result) {
+                case "OK":
+                    //  We created the event indicating that we found a solution
+                    EventSolutionFound(listRecognizedInstruction, null);
+                    break;
+                case "NOINSTRUCTION":
+                    SpeechText(samanthaVoice.ThereIsNoInstruction);
+                    break;
+                case "INSTRUCTIONNOTFOUND":
+                    SpeechText(samanthaVoice.InstructionNotFound);
+                    break;
+                case "EXCEPTION":
+                    SpeechText(samanthaVoice.AnExceptionOcurred);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        #region SpeechText
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <history>
+        /// </history>
+        /// 
+        public void SpeechText(string textToSpeech) {
+            //  We create the object (variable) "synthesizer_" of class "SpeechSynthesizer"
+            //  -- Creamos el objeto (variable) "synthesizer_" de la clase "SpeechSynthesizer"
+            SpeechSynthesizer synthesizer_ = new SpeechSynthesizer();
+
+            synthesizer_.SelectVoice("Microsoft Helena Desktop");
+            synthesizer_.Volume = 70;
+            synthesizer_.Rate = -1;
+            synthesizer_.SpeakAsync(textToSpeech);
+        }
+
+        #endregion SpeechText
+
+        public void SamanthaAreYourHere() {
+            SamanthaVoice_AcceptCommand = true;
+            //  Tiempo de espera para aceptar todos los comandos
+            _CountRemaining = ticksRemaining;
+
+            //  Variable aleatoria
+            Random _rnd = new Random();
+            String[] samVoiceSplit = this.samanthaVoice.OrderYou.Split(',');
+            //  La variable random solo acepta valores que van de cero hasta el numero de elementos de "yesSr"
+            SpeechText(samVoiceSplit[_rnd.Next(0, samVoiceSplit.Length)]);
+        }
+
+        public void GoSamantha() {
+            _CountRemaining = 2;
+        }
+
+        private async Task WriteToFile(string fileName, string strInfo) {
+            try {
+                string nameDirectoryMonth = DateTime.Now.ToString("yyyy-MM");
+                if(!Directory.Exists(nameDirectoryMonth))
+                    Directory.CreateDirectory(nameDirectoryMonth);
+                string nameDirectoryDay = DateTime.Now.ToString("yyyy-MM-dd");
+                if(!Directory.Exists($"{nameDirectoryMonth}\\{nameDirectoryDay}"))
+                    Directory.CreateDirectory($"{nameDirectoryMonth}\\{nameDirectoryDay}");
+                //
+                string nameFileComplement = DateTime.Now.ToString("yyyyMMddHH");
+                string sNombreTXTSession = $"{nameDirectoryMonth}\\{nameDirectoryDay}\\samantha_{fileName}_{nameFileComplement}.txt";
+                StringBuilder sb = new StringBuilder();
+
+                sb.AppendLine($"{DateTime.Now.ToString("yyy-MM-dd HH:mm:ss.ffff ")} {strInfo}");
+                using(StreamWriter archivo = new StreamWriter(sNombreTXTSession, true)) {
+                    archivo.Write(sb.ToString());
+                }
+            } catch(Exception ex) {
+                Console.WriteLine("Exception: " + ex.Message);
+            } finally {
+                Console.WriteLine("Executing finally block.");
+            }
+            await Task.CompletedTask;
+        }
+
+        #endregion Methods
+    }
+}
+
+
+public class ObjectWord {
+
+    public int id { get; set; }
+    public string TextToSearch {  get; set; }
+    public BackgroundWorker BWWordProcess { get; set; }
+    public event EventHandler EventCompleted;
+
+    public ObjectWord() {
+
+        BWWordProcess = new BackgroundWorker();
+        BWWordProcess.WorkerSupportsCancellation = true;
+    }
+
+    public void Initialize() {
+        BWWordProcess.DoWork += new DoWorkEventHandler(BWWordProcess_DoWork);
+        BWWordProcess.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BWWordProcess_Compoleto);
+    }
+
+    public void Run() {
+        BWWordProcess.RunWorkerAsync();
+    }
+
+    public void BWWordProcess_DoWork(object sender, DoWorkEventArgs e) {
+        TextToSearch = TextToSearch + DateTime.Now.ToString();
+    }
+
+    public void BWWordProcess_Compoleto(object sender, RunWorkerCompletedEventArgs e) {
+        EventCompleted(TextToSearch, null);
+    }
+}

@@ -1,0 +1,16 @@
+﻿
+Samantha versions
+- Child
+- Young
+- Executive
+- Master
+- Millenium
+- Forever
+
+DavidJaguarSoft@gmail.com	QeWfmEZytnlFzNJjR8MBrA==	TitireteRoJaDa	-	GbVZ24Tu.36A7oqfmNivMXLL1L7dl&Jcwsc4lgjQ#URL4BRXe
+MyEMail@MyDomain.com		8uI6VVNaRNNl+XUqBUhYkA==	MyUserPassword	-	LL1L7dl4Tu.36AvMXLLASRT%8$gADfaGAs%25#$QadaAAf4#$
+
+Session["SystemUserId"]
+Session["SystemUserCompanyId"]
+Session["SystemUserEMail"]
+Session["SystemUserToken"]

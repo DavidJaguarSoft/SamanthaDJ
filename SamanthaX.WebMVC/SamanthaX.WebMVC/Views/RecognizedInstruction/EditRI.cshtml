@@ -1,0 +1,388 @@
+﻿@using SamanthaX.Model.Entity;
+@model SamanthaX.WebMVC.Models.System.RecognizedInstructionModel
+@{
+    ViewBag.Title = "Instructions Dashboard";
+    Layout = "~/Views/Shared/_LayoutSystem.cshtml";
+}
+
+<main>
+    <div class="row ms-4">
+        <div class="col-sm-12">
+            <div class="panel panel-warning">
+                <div class="panel-heading alert alert-danger">
+                    @{
+                        string strTitle = string.Empty;
+                        if (Model.RecognizedInstructionId == 0) {
+                            strTitle = "New Instruction";
+                        } else {
+                            strTitle = "Edit Instruction";
+                        }
+                     }
+                    <h4>@strTitle</h4>
+                </div>
+                <div class="panel-body">
+                    <section>
+                        <div class="row">
+                            <div class="col">
+                                @if(Model.PanelGrammar) {
+                                    <div class="border"  style="color:blue">
+                                        <h5 class="ms-3">Selecting a Grammar</h5>
+                                        <strong class="ms-3">This is the first item’s acc ordion body.</strong>
+                                        <p class="ms-3">It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element.</p>
+                                        <div class="mt-3 ms-3">
+                                            @Html.DropDownListFor(
+                                                 Model => Model.GrammarId,
+                                                 new SelectList(
+                                                     ViewBag.RecognizedInstructionList,
+                                                     "GrammarId",
+                                                     "Name"
+                                                 ),
+                                                 "Click to Grammar List...",
+                                                 new {
+                                                     @id = "GrammarSelectedId",
+                                                     @class = "form-control nav-item dropdown"
+                                                 }
+                                             )
+                                        </div>
+                                        <div class="col-1 mt-2 mb-3 ms-3" style="width:auto">
+                                            <button class="btn btn-success"
+                                                    type="button"
+                                                    onclick="StepTwoInstructionBuilder_()">
+                                                Continue
+                                            </button>
+                                        </div>
+                                    </div>
+                                 } else {
+                                    <div class="border">
+                                        <h5 class="ms-3">Grammar Selected: @Model.Grammar</h5>
+                                    </div>
+                                 }
+                                @if(Model.PanelInstruction) {
+                                    <div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="border mb-3" style="color:blue">
+                                                    <div class="row align-items-center">
+                                                        <div class="col-auto">
+                                                            <a class="btn btn-dark btn-sm"
+                                                               href="@Url.Action(
+                                                                    "EditRI",
+                                                                    "RecognizedInstruction",
+                                                                    new { Origin = "BACK_PANEL_GRAMMAR"}
+                                                               )">
+                                                                Return to Select a Grammar
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <h5 class="ms-3">Building Intruction...</h5>
+                                                        </div>
+                                                    </div>
+                                                    @if (Model.GrammarBuilderList != null) {
+                                                        foreach (GrammarBuilderEn item in Model.GrammarBuilderList) {
+                                                            <div class="row">
+                                                                <div class="col-1">
+                                                                    <div class="mt-3 ms-3">
+                                                                        <p>@item.WordClassName</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <div id="idSelects" class="mt-3 ms-3">
+                                                                        @Html.DropDownList(
+                                                                             item.WordClassCode,
+                                                                             new SelectList(
+                                                                                 item.RecognizedWordsList,
+                                                                                 "RecognizedWordId",
+                                                                                 "RelatedWords"
+                                                                             ),
+                                                                             $"Click to Select a {item.WordClassName}...",
+                                                                             new {
+                                                                                 @class = "form-control nav-item dropdown",
+                                                                                 @onchange = "SelectWordOnChange_(this);"
+                                                                             }
+                                                                         )
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                     }
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <div class="col justify-content-center">
+                                                        <div class="row">
+                                                            <div class="col text-start">
+                                                                <button class="btn btn-success" type="button" onclick="GenerateInstruction_()">
+                                                                    Generate Code Instruction
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <h3 class="mt-3" id="ArmedInstructionId"></h3>
+                                                        <div class="mt-3"></div>
+                                                        <a id="buttonContinue"
+                                                           class="btn btn-primary"
+                                                           style="display:none"
+                                                           href="@Url.Action(
+                                                                 "EditRI",
+                                                                 "RecognizedInstruction",
+                                                                  new { Origin = "FORWARD_PANEL_DATA", }
+                                                            )">
+                                                            Continue
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 } else {
+                                    <div class="border">
+                                        <h5 class="ms-3">Armed Instruccion Code: @Model.ArmedInstruction</h5>
+                                    </div>
+                                 }
+                                @if(Model.PanelData) {
+                                    var displaymode = "";
+                                    if (Model.RecognizedInstructionId > 0) {
+                                        displaymode = "none";
+                                    } else {
+                                        displaymode = "block";
+                                    }
+                                    <div class="border" style="color:blue">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="panel panel-warning">
+                                                    <div class="panel-heading mt-4">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-auto" style="display:@displaymode">
+                                                                <a class="btn btn-dark btn-sm"
+                                                                   href="@Url.Action(
+                                                                        "EditRI",
+                                                                        "RecognizedInstruction",
+                                                                        new { Origin = "BACK_PANEL_INSTRUCTION"}
+                                                                   )">Return to Create an Instruction</a>
+                                                            </div>
+                                                            <div class="col-auto">
+                                                                <h5 class="ms-3">Data Edit.</h5>
+                                                            </div>
+
+                                                            <div class="col-auto">
+
+                                                            </div>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div class="panel-body mt-3 ms-3">
+                                                        <form action="@Url.Action("EditRI", "RecognizedInstruction")" method="post">
+                                                            <div class="form-group" style="display:none">
+                                                                <label>RecognizedInstructionId</label>
+                                                                @Html.TextBox(
+                                                                    "RecognizedInstructionId",
+                                                                    null,
+                                                                    new {
+                                                                        @class = "form-control",
+                                                                        @readonly = "true"
+                                                                    })
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Code</label>
+                                                                @Html.TextBox(
+                                                                    "Code",
+                                                                    null,
+                                                                    new {
+                                                                        @class = "form-control",
+                                                                        @readonly = "true",
+                                                                    })
+                                                                <div style="color:red;">@Html.ValidationMessage("Code")</div>
+                                                                <br />
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Instruction</label>
+                                                                @Html.TextBox(
+                                                                    "Instruction",
+                                                                    null,
+                                                                    new {
+                                                                        @class = "form-control",
+                                                                        @placeholder = "Instruction",
+                                                                        @maxlength = "100",
+                                                                    })
+                                                                <div style="color:red;">@Html.ValidationMessage("Instruction")</div>
+                                                                <br />
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Description</label>
+                                                                @Html.TextBox(
+                                                                    "Description",
+                                                                    null,
+                                                                    new {
+                                                                        @class = "form-control",
+                                                                        @placeholder = "Description",
+                                                                        @maxlength = "100",
+                                                                    })
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Voice Processing</label>
+                                                                @Html.TextBox(
+                                                                    "VoiceProcessing",
+                                                                    null,
+                                                                    new {
+                                                                        @class = "form-control",
+                                                                        @placeholder = "VoiceProcessing",
+                                                                        @maxlength = "100",
+                                                                    })
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Voice Solution</label>
+                                                                @Html.TextBox(
+                                                                    "VoiceSolution",
+                                                                    null,
+                                                                    new {
+                                                                        @class = "form-control",
+                                                                        @placeholder = "VoiceSolution",
+                                                                        @maxlength = "100",
+                                                                    })
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Voice Cancel</label>
+                                                                @Html.TextBox(
+                                                                    "VoiceCancel",
+                                                                    null,
+                                                                    new {
+                                                                        @class = "form-control",
+                                                                        @placeholder = "VoiceCancel",
+                                                                        @maxlength = "100",
+                                                                    })
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Voice Fail</label>
+                                                                @Html.TextBox(
+                                                                    "VoiceFail",
+                                                                    null,
+                                                                    new {
+                                                                        @class = "form-control",
+                                                                        @placeholder = "VoiceFail",
+                                                                        @maxlength = "100",
+                                                                    })
+                                                            </div>
+                                                            <div class="mt-2 mb-2">
+                                                                @*Buttons*@
+                                                                <button type="submit" class="btn btn-primary mt-4">Save</button>
+                                                                <a class="btn btn-danger mt-4" href="@Url.Action("DashboardRI","RecognizedInstruction")">Cancel</a>
+                                                            </div>
+                                                            <div>
+                                                                @if (ViewData["ErrorMessageSX"] != null) {
+                                                                    <div>
+                                                                        <div class="alert alert-warning" role="alert">
+                                                                            @ViewData["ErrorMessageSX"]
+                                                                        </div>
+                                                                    </div>
+                                                                 }
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                 } else {
+                                    <div class="border">
+                                        <h5 class="ms-3">Data Resume</h5>
+                                    </div>
+                                 }
+                            </div>
+                        </div>
+
+                        
+                    </section>
+
+                    <div class="col-4">
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function StepTwoInstructionBuilder_() {
+        //
+        var grammarSelectedValue = $("#GrammarSelectedId").val();
+        console.log("Grammar Selected Id", grammarSelectedValue);
+        if (grammarSelectedValue == "" || grammarSelectedValue == null) {
+            alert("You must select a Grammar");
+        } else {
+            window.location.href = '@Url.Action("EditRI", "RecognizedInstruction")'
+                + '?GrammarSelectedId=' + grammarSelectedValue
+                + '&Origin=' + 'FORWARD_PANEL_INSTRUCTION';
+        }
+    }
+
+    function SelectWordOnChange_(selectedWord) {
+        //
+        var selectedIndex = selectedWord.selectedIndex;
+        var selectedValue = selectedWord.value;
+        var selectedId = selectedWord.id;
+        //console.log("selectedIndex", selectedIndex);
+        console.log("selectedValue", selectedValue);
+        console.log("selectedId", selectedId);
+        //
+        $("#ArmedInstructionId").text("");
+        document.getElementById("buttonContinue").style.display = "none";
+        //
+        if (selectedValue == null || selectedValue == '') {
+            console.log("No selection");
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("NoSelectWordOnChange", "RecognizedInstruction")",
+                data: { WordClassSelectedCode: selectedId },
+                success: function (data) {
+                    //console.log("Success data", data);
+                },
+                error: function () {
+                    $("#resultado").text("An error occurred");
+                }
+            });
+        } else {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("SelectWordOnChange", "RecognizedInstruction")",
+                data: { RecognizedWordSelectedId: selectedValue, WordClassSelectedCode: selectedId },
+                success: function (data) {
+                    //console.log("Success data", data);
+                },
+                error: function () {
+                    $("#resultado").text("An error occurred");
+                }
+            });
+        }
+        //
+        //var selectedVal = document.getElementById(selectedId).value;
+        //console.log("selectedVal", selectedVal);
+        //
+        @*window.location.href = '@Url.Action("BuildingInstruction", "RecognizedInstruction")'
+            + '?RecognizedWordSelectedId=' + selectedValue
+            + '&WordClassSelectedCode=' + selectedId;*@
+    }
+
+    function GenerateInstruction_() {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("GenerateInstruction", "RecognizedInstruction")',
+            data: {},
+            success: function (data) {
+                var instructionResult = data;
+                console.log("data", instructionResult);
+                if (instructionResult == '""') {
+                    alert("You must select all Type or Classes of Words !");
+                    document.getElementById("buttonContinue").style.display = "none";
+                } else {
+                    $("#ArmedInstructionId").text(instructionResult);
+                    document.getElementById("buttonContinue").style.display = "block";
+                }
+            },
+            error: function () {
+                $("#ArmedInstructionId").text("Error creating instruction");
+            }
+        });
+    }
+</script>

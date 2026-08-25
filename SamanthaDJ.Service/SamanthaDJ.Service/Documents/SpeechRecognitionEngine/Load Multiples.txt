@@ -1,0 +1,614 @@
+﻿
+https://learn.microsoft.com/es-es/archive/msdn-magazine/2014/december/voice-recognition-speech-recognition-with-net-desktop-applications
+
+-----------------------------------------------
+Relevante
+    Ilustración 3. Código fuente de la demostración de aplicación de consola
+-----------------------------------------------
+Reconocimiento de voz
+Artículo
+09/03/2015
+En este artículo
+Reconocimiento de voz
+Adición de voz a una aplicación de consola
+Tratamiento de la voz reconocida
+Instalación de las bibliotecas
+Mostrar 3 más
+Reconocimiento de voz con aplicaciones de escritorio .NET
+James McCaffrey
+
+Descargar el código de muestra
+
+Con la presentación de Cortana de Windows Phone, la asistente personal que se activa con la voz (igual que La-que-no-debe-ser-nombrada de cierta empresa Frutal), las aplicaciones que se habilitan con la voz han entrado con fuerza en el área de desarrollo de software. En este artículo le mostraré cómo comenzar a usar el reconocimiento y la síntesis de voz en las aplicaciones de consola de Windows, en las aplicaciones de Windows Forms y en las aplicaciones de Windows Presentation Foundation (WPF).
+
+Tenga en cuenta que también puede agregar capacidades de voz a aplicaciones de Windows Phone, a aplicaciones web ASP.NET, a aplicaciones de la Tienda Windows, a aplicaciones Windows RT y a Xbox Kinect, pero las técnicas para llevar esto acabo son totalmente diferentes de las que presentaré en este artículo.
+
+Un buen modo de saber qué es lo que verá a lo largo de este artículo es echarle un vistazo a las capturas de pantalla de la Ilustración 1 y la Ilustración 2 que muestran dos programas de demostración. Cuando se inicia la aplicación de consola de la Ilustración 1, inmediatamente dice: "Estoy activado". Por supuesto, como no puede oír la demostración mientras está leyendo el artículo, el programa de demostración le muestra el texto de lo que el equipo está diciendo. A continuación, el usuario dice el comando: "Activar voz" y la demostración repite el texto que ha reconocido para, posteriormente y entre bastidores, habilitar la aplicación para que escuche y responda a las peticiones que se le hacen para sumar dos números.
+
+Reconocimiento y síntesis de voz en una aplicación de consola
+Ilustración 1. Reconocimiento y síntesis de voz en una aplicación de consola
+
+Reconocimiento de voz en una aplicación de Windows Forms
+Ilustración 2. Reconocimiento de voz en una aplicación de Windows Forms
+
+El usuario le pide a la aplicación que sume uno más dos y después, dos más tres. La aplicación reconoce los comandos que le van diciendo y proporciona las respuestas de viva voz. Un poco más adelante le describiré unos cuantos métodos útiles más para utilizar el reconocimiento de voz.
+
+A continuación, el usuario dice el comando "Desactivar voz", que desactiva la capacidad del programa de escuchar los comandos para la suma de números, pero el reconocimiento de voz no se desactiva completamente. Con la voz desactivada, se ignore la siguiente petición de sumar uno más dos. Por último, el usuario vuelve a activar el reconocimiento de voz y dice el comando sin sentido "klatu barada nikto", que la aplicación reconoce para desactivar de forma completa el reconocimiento de voz y cerrarse.
+
+La Ilustración 2 muestra una simulación de voz habilitada para la aplicación Windows Forms. La aplicación reconoce los comandos de voz, pero no le responde en voz alta. Al iniciar la aplicación por primera vez, la casilla de verificación Activar voz no estaba marcada y esto le indica que el reconocimiento de voz no está activo. Entonces el usuario marca la casilla Activar voz y dice: "Hola". La aplicación repite por escrito aquello que ha entendido en el control ListBox que está en la parte inferior de la aplicación.
+
+A continuación, el usuario dice: "Establecer el cuadro de texto 1 en rojo". Aquí vemos que la aplicación ha reconocido "Establecer el cuadro de texto 1 rojo" que es, casi pero no totalmente, lo mismo que ha dicho el usuario. Aunque no se ve en la Ilustración 2, el texto del control TextBox de la parte superior de la aplicación se ha establecido en "rojo".
+
+Después, el usuario dice: "Establezca el cuadro de texto 1 en blanco", la aplicación reconoce "Establece el cuadro de texto 1 blanco" y después realiza la acción. Para finalizar, el usuario dice: "Adiós" y la aplicación repite el comando, pero no toca Windows Forms (aunque puede hacerlo) desactivando la casilla Activar voz.
+
+En los siguientes apartados, le indicaré el proceso para crear ambos programas de demostración, incluida la instalación para las bibliotecas .NET necesarias. En este artículo doy por sentado que tiene capacidades de programación de nivel medio, pero no tiene por qué saber nada acerca del reconocimiento o síntesis de voz.
+
+Adición de voz a una aplicación de consola
+Para crear la demostración que se muestra en la Ilustración 1, tengo que iniciar Visual Studio y crear una aplicación de consola C# nueva llamada ConsoleSpeech. He usado correctamente la voz con Visual Studio 2010 y 2012, pero cualquier otra versión más reciente debería funcionar. Cuando se ha cargado el código de plantilla en el editor, procedo a cambiar el nombre del archivo Program.cs en la ventana I del Explorador de soluciones por otro nombre más descriptivo: ConsoleSpeechProgram.cs; después Visual Studio procede a cambiar el nombre de la clase Program por mí.
+
+A continuación, agrego una referencia al archivo Microsoft.Speech.dll, que se encuentra en C:\ProgramFiles (x86)\Microsoft SDKs\Speech\v11.0\Assembly. Como no tenía esta DLL en mi equipo host, he tenido que descargarla. La instalación de los archivos necesarios para agregar el reconocimiento y síntesis de voz a una aplicación no es algo que deba tomarse a la ligera. Explicaré el proceso de instalación en detalle en el siguiente apartado de este artículo pero, por ahora, supongamos que Microsoft.Speech.dll ya está en su equipo.
+
+Después de agregar la referencia a la DLL de voz, procedo a borrar todas las instrucciones Using de la parte superior del código fuente, excepto aquella que indica el espacio de nombres del Sistema de primer nivel. A continuación, agrego las instrucciones Using a los espacios de nombres Microsoft.Speech.Recognition, Microsoft.Speech.Synthesis y System.Globalization. Los dos primeros espacios de nombres están asociados a la DLL de voz. Nota: aunque resulte confuso, también existen los espacios de nombres System.Speech.Recognition y System.Speech.Synthesis. Le explicaré la diferencia brevemente. El espacio de nombre Globalization ya está disponible de manera predeterminada y no requiere que se agregue una nueva referencia al proyecto.
+
+La totalidad del código fuente para la demostración de aplicación de consola se muestra en la Ilustración 3 y la tiene disponible en la descarga de código que acompaña a este artículo. Para que las ideas principales estén lo más claras posible, he quitado todas las comprobaciones de errores normales.
+
+Ilustración 3. Código fuente de la demostración de aplicación de consola
+
+XML
+
+Copiar
+using System;
+using Microsoft.Speech.Recognition;
+using Microsoft.Speech.Synthesis;
+using System.Globalization;
+namespace ConsoleSpeech
+{
+  class ConsoleSpeechProgram
+  {
+    static SpeechSynthesizer ss = new SpeechSynthesizer();
+    static SpeechRecognitionEngine sre;
+    static bool done = false;
+    static bool speechOn = true;
+    static void Main(string[] args)
+    {
+      try
+      {
+        ss.SetOutputToDefaultAudioDevice();
+        Console.WriteLine("\n(Speaking: I am awake)");
+        ss.Speak("I am awake");
+        CultureInfo ci = new CultureInfo("en-us");
+        sre = new SpeechRecognitionEngine(ci);
+        sre.SetInputToDefaultAudioDevice();
+        sre.SpeechRecognized += sre_SpeechRecognized;
+        Choices ch_StartStopCommands = new Choices();
+        ch_StartStopCommands.Add("speech on");
+        ch_StartStopCommands.Add("speech off");
+        ch_StartStopCommands.Add("klatu barada nikto");
+        GrammarBuilder gb_StartStop = new GrammarBuilder();
+        gb_StartStop.Append(ch_StartStopCommands);
+        Grammar g_StartStop = new Grammar(gb_StartStop);
+        Choices ch_Numbers = new Choices();
+        ch_Numbers.Add("1");
+        ch_Numbers.Add("2");
+        ch_Numbers.Add("3");
+        ch_Numbers.Add("4");
+        GrammarBuilder gb_WhatIsXplusY = new GrammarBuilder();
+        gb_WhatIsXplusY.Append("What is");
+        gb_WhatIsXplusY.Append(ch_Numbers);
+        gb_WhatIsXplusY.Append("plus");
+        gb_WhatIsXplusY.Append(ch_Numbers);
+        Grammar g_WhatIsXplusY = new Grammar(gb_WhatIsXplusY);
+        sre.LoadGrammarAsync(g_StartStop);
+        sre.LoadGrammarAsync(g_WhatIsXplusY);
+        sre.RecognizeAsync(RecognizeMode.Multiple);
+        while (done == false) { ; }
+        Console.WriteLine("\nHit <enter> to close shell\n");
+        Console.ReadLine();
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine(ex.Message);
+        Console.ReadLine();
+      }
+    } // Main
+    static void sre_SpeechRecognized(object sender,
+      SpeechRecognizedEventArgs e)
+    {
+      string txt = e.Result.Text;
+      float confidence = e.Result.Confidence;
+      Console.WriteLine("\nRecognized: " + txt);
+      if (confidence < 0.60) return;
+      if (txt.IndexOf("speech on") >= 0)
+      {
+        Console.WriteLine("Speech is now ON");
+        speechOn = true;
+      }
+      if (txt.IndexOf("speech off") >= 0)
+      {
+        Console.WriteLine("Speech is now OFF");
+        speechOn = false;
+      }
+      if (speechOn == false) return;
+      if (txt.IndexOf("klatu") >= 0 && txt.IndexOf("barada") >= 0)
+      {
+        ((SpeechRecognitionEngine)sender).RecognizeAsyncCancel();
+        done = true;
+        Console.WriteLine("(Speaking: Farewell)");
+        ss.Speak("Farewell");
+      }
+      if (txt.IndexOf("What") >= 0 && txt.IndexOf("plus") >= 0)
+      {
+        string[] words = txt.Split(' ');
+        int num1 = int.Parse(words[2]);
+        int num2 = int.Parse(words[4]);
+        int sum = num1 + num2;
+        Console.WriteLine("(Speaking: " + words[2] + " plus " +
+          words[4] + " equals " + sum + ")");
+        ss.SpeakAsync(words[2] + " plus " + words[4] +
+          " equals " + sum);
+      }
+    } // sre_SpeechRecognized
+  } // Program
+} // ns
+Después de las instrucciones Using, el código de demostración comienza de manera similar a lo siguiente:
+
+XML
+
+Copiar
+namespace ConsoleSpeech
+{
+  class ConsoleSpeechProgram
+  {
+    static SpeechSynthesizer ss = new SpeechSynthesizer();
+    static SpeechRecognitionEngine sre;
+    static bool done = false;
+    static bool speechOn = true;
+    static void Main(string[] args)
+    {
+...
+El objeto de ámbito de clase SpeechSynthesizer proporciona a la aplicación la habilidad de hablar. El objeto SpeechRecognitionEngine permite a la aplicación escuchar y reconocer las palabras o frases que se dicen. La variable booleana “done” determina cuándo se termina la aplicación completa. La variable booleana speechOn controla si la aplicación está escuchando cualquier comando que no sea uno utilizado para salir del programa.
+
+La idea que intento plasmar aquí es que la aplicación de consola no acepta comandos por escrito desde el teclado, así que siempre está escuchando comandos. De todas formas, si speechOn es falso, solo se reconocerá y aplicará el comando para salir del programa; el resto de comandos también se reconocerán pero se ignorarán.
+
+Comienza el método Main:
+
+XML
+
+Copiar
+try
+{
+  ss.SetOutputToDefaultAudioDevice();
+  Console.WriteLine("\n(Speaking: I am awake)");
+  ss.Speak("I am awake");
+Se crea una instancia del objeto SpeechSynthesizer cuando se declara. Es bastante sencillo usar un objeto sintetizador. El método SetOutput­ToDefaultAudioDevice envía la salida a los altavoces de su equipo (la salida también puede enviarse a un archivo). El método Speak admite una cadena para después decirla. Así de fácil.
+
+El reconocimiento de voz es bastante más complejo que la síntesis de voz. El método Main continúa al crear el objeto reconocedor:
+
+XML
+
+Copiar
+CultureInfo ci = new CultureInfo("en-us");
+sre = new SpeechRecognitionEngine(ci);
+sre.SetInputToDefaultAudioDevice();
+sre.SpeechRecognized += sre_SpeechRecognized;
+En primer lugar, se especifica el lenguaje que se va a reconocer (inglés de EE.UU. en este caso) en un objeto CultureInfo. El objeto CultureInfo se encuentra en el espacio de nombres Globalization, al que se hizo referencia con una instrucción Using. A continuación, y después de llamar al constructor SpeechRecognitionEngine, se establece la entrada de voz en el dispositivo de audio predeterminado que suele ser, en la mayoría de casos, un micrófono. Tenga en cuenta que, en general, los portátiles tienen un micrófono integrado y que la mayoría de equipos de escritorio necesitarán un micrófono externo (hoy en día normalmente se encuentran combinados con los auriculares).
+
+El método clave para el objeto reconocedor es el controlador de eventos SpeechRecognized. Cuando utilice Visual Studio, si escribe “sre.Speech­Recognized +=” y espera una fracción de segundo, la característica IntelliSense completará automáticamente su instrucción con “sre_SpeechRecognized” para el nombre del controlador de eventos. Para aceptar y utilizar el nombre predeterminado, le recomiendo que presione el tabulador.
+
+A continuación, la demostración configura la capacidad de reconocer comandos para sumar dos números:
+
+XML
+
+Copiar
+Choices ch_Numbers = new Choices();
+ch_Numbers.Add("1");
+ch_Numbers.Add("2");
+ch_Numbers.Add("3");
+ch_Numbers.Add("4"); // Technically Add(new string[] { "4" });
+GrammarBuilder gb_WhatIsXplusY = new GrammarBuilder();
+gb_WhatIsXplusY.Append("What is");
+gb_WhatIsXplusY.Append(ch_Numbers);
+gb_WhatIsXplusY.Append("plus");
+gb_WhatIsXplusY.Append(ch_Numbers);
+Grammar g_WhatIsXplusY = new Grammar(gb_WhatIsXplusY);
+Los tres objetos clave que se muestran aquí son la colección Choices, una plantilla GrammarBuilder y el control Grammar. A la hora de desarrollar el reconocimiento de voz Grammar, comienzo creando una lista de algunos ejemplos específicos de aquello que quiero que se reconozca. Por ejemplo, "¿cuánto suman uno más dos?" y "¿cuánto suman tres más cuatro?"
+
+Entonces determino la plantilla general correspondiente como por ejemplo "¿cuánto suman <x> más <y>?" La plantilla es un GrammarBuilder y los valores específicos que van en ella son Choices. El objeto Grammar incluye tanto la plantilla como los valores Choices.
+
+Para esta demostración restrinjo los números que se van a sumar del 1 al 4 y los agrego como cadenas a la colección Choices. Un mejor enfoque es:
+
+XML
+
+Copiar
+string[] numbers = new string[] { "1", "2", "3", "4" };
+Choices ch_Numbers = new Choices(numbers);
+Le estoy exponiendo este enfoque de manera simple para crear una colección Choices por dos razones: la primera, porque agregar una cadena cada vez fue el único enfoque que vi en otros ejemplos de voz. la segunda, porque probablemente piense que agregar una cadena a la vez ni tan siquiera funcione; IntelliSense de Visual Studio indica que una de las sobrecargas Add acepta un parámetro de tipo "params string[] phrases". Si no se fijó en la palabra clave "params" probablemente pensó que el método Add acepta únicamente una matriz de cadenas en vez de una matriz de tipo cadena o una única cadena. Le recomiendo que pase una matriz.
+
+Crear una colección Choices de números consecutivos es, en cierto modo, un caso especial que le permitirá tener un enfoque de programación como este:
+
+XML
+
+Copiar
+string[] numbers = new string[100];
+for (int i = 0; i < 100; ++i)
+  numbers[i] = i.ToString();
+Choices ch_Numbers = new Choices(numbers);
+Cuando se hayan creado las Choices para rellenar los espacios del GrammarBuilder, la demostración crea el GrammarBuilder y el control Grammar tal y como se muestra aquí:
+
+XML
+
+Copiar
+GrammarBuilder gb_WhatIsXplusY = new GrammarBuilder();
+gb_WhatIsXplusY.Append("What is");
+gb_WhatIsXplusY.Append(ch_Numbers);
+gb_WhatIsXplusY.Append("plus");
+gb_WhatIsXplusY.Append(ch_Numbers);
+Grammar g_WhatIsXplusY = new Grammar(gb_WhatIsXplusY);
+Además, la demostración utiliza un patrón similar para crear un Grammar para comandos de inicio y parada:
+
+XML
+
+Copiar
+Choices ch_StartStopCommands = new Choices();
+ch_StartStopCommands.Add("speech on");
+ch_StartStopCommands.Add("speech off");
+ch_StartStopCommands.Add("klatu barada nikto");
+GrammarBuilder gb_StartStop = new GrammarBuilder();
+gb_StartStop.Append(ch_StartStopCommands);
+Grammar g_StartStop = new Grammar(gb_StartStop);
+Cuenta con una gran flexibilidad a la hora de definir gramáticas. Aquí, los comandos "speech on", "speech off" y "klatu barada nikto" se colocan en la misma gramática ya que están relacionados de forma lógica. También podría definir estos tres comandos en tres gramáticas diferentes o también colocar los comandos "speech on" y "speech off" en una gramática y el comando "klatu barada nikto" en una segunda.
+
+Una vez creados todos los objetos Grammar, éstos pasan al reconocedor de voz y se activa el reconocimiento de voz:
+
+XML
+
+Copiar
+sre.LoadGrammarAsync(g_StartStop);
+sre.LoadGrammarAsync(g_WhatIsXplusY);
+sre.RecognizeAsync(RecognizeMode.Multiple);
+El argumento RecognizeMode.Multiple es necesario cuando tenemos más de una gramática; este será siempre el caso, excepto en los programas más sencillos. El método Main termina de la siguiente manera:
+
+XML
+
+Copiar
+...
+    while (done == false) { ; }
+    Console.WriteLine("\nHit <enter> to close shell\n");
+    Console.ReadLine();
+  }
+  catch (Exception ex)
+  {
+    Console.WriteLine(ex.Message);
+    Console.ReadLine();
+  }
+} // Main
+Este es el curioso aspecto de vacío que se crea cuando el bucle permite que el shell de la aplicación de consola siga funcionando. El bucle finalizará cuando el controlador de eventos reconocedor de voz establezca la variable "done" del ámbito de clase Boolean en verdadero.
+
+Tratamiento de la voz reconocida
+El código para el controlador de eventos de voz reconocida comienza de la siguiente manera:
+
+XML
+
+Copiar
+static void sre_SpeechRecognized(object sender,
+  SpeechRecognizedEventArgs e)
+{
+  string txt = e.Result.Text;
+  float confidence = e.Result.Confidence;
+  Console.WriteLine("\nRecognized: " + txt);
+  if (confidence < 0.60) return;
+...
+El texto reconocido se almacena en la propiedad SpeechRecognized­EventArgs Result.Text. También puede usar la colección Result.Words. La propiedad Result.Confidence contiene un valor entre 0,0 y 1,0; una medida un poco pobre de cómo coincide todo lo que se dice con cualquiera de las gramáticas asociadas en el reconocedor. La demostración indica al controlador de eventos que ignore cualquier texto cuyo nivel de confianza considere bajo.
+
+Los valores de confianza varían ampliamente dependiendo de la complejidad de sus gramáticas, la calidad del micrófono, etc. Por ejemplo, si la demostración debe reconocer solo del 1 al 4, los valores de confianza de mi equipo serán normalmente de 0,75. En cambio, si la gramática tiene que reconocer del 1 al 100, los valores de confianza caen hasta alcanzar un 0,25 aproximadamente. En resumen, deberá probar con los valores de confianza para lograr buenos resultados de reconocimiento de voz.
+
+Después de esto, el controlador de eventos reconocedor de voz va activando o desactivando el reconocimiento:
+
+XML
+
+Copiar
+if (txt.IndexOf("speech on") >= 0)
+{
+  Console.WriteLine("Speech is now ON");
+  speechOn = true;
+}
+if (txt.IndexOf("speech off") >= 0)
+{
+  Console.WriteLine("Speech is now OFF");
+  speechOn = false;
+}
+if (speechOn == false) return;
+Puede que al principio no resulte algo obvio, pero si examina la lógica durante un momento verá que tiene sentido. A continuación, se procesa el comando de salida secreta:
+
+XML
+
+Copiar
+if (txt.IndexOf("klatu") >= 0 && txt.IndexOf("barada") >= 0)
+{
+  ((SpeechRecognitionEngine)sender).RecognizeAsyncCancel();
+  done = true;
+  Console.WriteLine("(Speaking: Farewell)");
+  ss.Speak("Farewell");
+}
+Tenga en cuenta que el motor de reconocimiento de voz también reconoce palabras sin sentido. Si un objeto Grammar contiene palabras que no aparecen en su diccionario integrado, el objeto Grammar intentará identificar tales palabras de la manera más adecuada utilizando la heurística semántica; una opción que normalmente realiza con éxito. Por esto es por lo que he usado "klatu" en vez de la forma correcta "klaatu" (que viene, por cierto, de una vieja película de ciencia ficción).
+
+Tenga también en cuenta que no ha de procesar al completo el texto Grammar reconocido ("klatu barada nikto"); simplemente, ha de tener la información suficiente para identificar de forma única una frase gramatical ("klatu" y "barada").
+
+Después, se procesan los comandos para agregar dos números y el final del controlador de eventos y la clase y espacio de nombres Program:
+
+XML
+
+Copiar
+...
+      if (txt.IndexOf("What") >= 0 && txt.IndexOf("plus") >= 0)
+      {
+        string[] words = txt.Split(' ');
+        int num1 = int.Parse(words[2]);
+        int num2 = int.Parse(words[4]);
+        int sum = num1 + num2;
+        Console.WriteLine("(Speaking: " + words[2] +
+          " plus " + words[4] + " equals " + sum + ")");
+        ss.SpeakAsync(words[2] + " plus " + words[4] +
+          " equals " + sum);
+      }
+    } // sre_SpeechRecognized
+  } // Program
+} // ns
+Observe que el texto de Results.Text distingue entre mayúsculas y minúsculas ("Cuánto" vs. "cuánto"). Una vez reconocida una frase, puede analizar palabras específicas. En este caso, el texto reconocido tiene la forma "Cuánto es x más y", así que "Cuánto" está en words[0] y los dos números que se van a agregar (como cadenas) están en words[2] y words[4].
+
+Instalación de las bibliotecas
+En la descripción del programa de demostración se asume que tiene las bibliotecas de voz necesarias instaladas en su máquina. Para crear y ejecutar los programas de demostración necesitará instalar cuatro paquetes: un SDK para poder crear las demostraciones en Visual Studio, un motor en tiempo de ejecución para poder ejecutar esas demostraciones después de crearlas, un lenguaje de reconocimiento y un lenguaje de síntesis (hablado).
+
+Para instalar el SDK, busque en Internet "Speech Platform 11 SDK". Esta búsqueda le llevará a la página adecuada del Centro de descarga de Microsoft Download Center, como se muestra en la Ilustración 4. Al hacer clic en el botón Descargar, verá las opciones que se muestran en la Ilustración 5. El SDK está disponible en las versiones de 32 y 64 bits. Le recomiendo encarecidamente que utilice la versión de 32 bits independientemente de qué tipo de máquina host tenga. Esto se debe a que la versión de 64 bits no suele funcionar bien con algunas aplicaciones.
+
+Página principal de instalación del SDK en el Centro de descargas de Microsoft
+Ilustración 4. Página principal de instalación del SDK en el Centro de descargas de Microsoft
+
+Instalación de Speech SDK
+Ilustración 5. Instalación de Speech SDK
+
+Solo necesita el archivo x86 (de 32 bits) .msi. Tras seleccionar el archivo y hacer clic en el botón Siguiente, puede ejecutar el programa de instalación directamente. Las bibliotecas de voz no le enviarán comentarios para informarle de que la instalación se ha completado correctamente, así que no los busque.
+
+Una vez hecho esto, deberá instalar la plataforma Speech Runtime. Después de buscar la página principal y hacer clic en Siguiente, verá las opciones que se indican en la Ilustración 6.
+
+Instalación de Speech Runtime
+Ilustración 6. Instalación de Speech Runtime
+
+Es indispensable que elija la misma versión de plataforma (la 11 en la demo) y de bits (32 [x86] o 64 [x64]) que en SDK. Una vez más, le recomiendo encarecidamente la versión de 32 bits sin importar si está trabajando con un equipo de 64 bits.
+
+A continuación puede instalar el lenguaje de reconocimiento. La página de descarga se muestra en la Ilustración 7. La demostración utiliza el archivo MSSpeech_SR_en-us_TELE.msi (English-U.S.). Las siglas SR indican "speech recognition" o reconocimiento de voz y TELE indica "telefonía", lo cual quiere decir que el lenguaje de reconocimiento está diseñado para funcionar con entradas de audio de baja calidad, como por ejemplo un teléfono o un micrófono de escritorio.
+
+Instalación del lenguaje de reconocimiento
+Ilustración 7. Instalación del lenguaje de reconocimiento
+
+Por último, puede instalar la síntesis de voz y el lenguaje y voz de síntesis. La página de descarga se muestra en la Ilustración 8. La demostración utiliza el archivo MSSpeech_TTS_en-us_Helen.msi. Aquí la TTS indica "text-to-speech" o texto a voz, lo cual es básicamente un sinónimo de síntesis de voz. Observe que hay dos voces disponibles para el lenguaje English, U.S (inglés de EE.UU.). También tiene disponibles otras voces en inglés que no son de EE.UU. Es bastante difícil crear archivos de síntesis, pero es posible comprar a un puñado de empresas otras voces e instalarlas.
+
+Instalación del lenguaje y voz de síntesis
+Ilustración 8. Instalación del lenguaje y voz de síntesis
+
+Como apunte interesante, aunque el lenguaje de reconocimiento de voz y la síntesis de voz/lenguaje son dos cosas completamente diferentes, ambas descargas se encuentran en una misma página. La IU del Centro de descargas le permite marcar tanto el reconocimiento de lenguaje como la síntesis de lenguaje, pero fue un desastre cuando intenté instalarlos al mismo tiempo así que le recomiendo que los instale uno a uno.
+
+Microsoft.Speech vs. System.Speech
+Si es la primera vez que trabaja con las aplicaciones de Windows de reconocimiento de voz y síntesis, es probable que se sienta abrumado por la documentación ya que hay una gran variedad de plataformas de voz. En concreto, además de la biblioteca Microsoft.Speech.dll que han utilizado las demostraciones de este artículo, existe una biblioteca System.Speech.dll que forma parte del SO Windows. Ambas bibliotecas son similares en que las API son casi, pero no totalmente, las mismas. Así que, si se dedica a buscar ejemplos de voz en línea y ve un fragmento de código en vez de un programa completo, no siempre será obvio si el ejemplo se está refiriendo a System.Speech o a Microsoft.Speech.
+
+La conclusión de todo esto es que, si está dando sus primeros pasos con el reconocimiento de voz, para agregar la voz a una aplicación .NET deberá usar la biblioteca Microsoft.Speech y no la biblioteca System.Speech.
+
+Aunque ambas bibliotecas compartan en su núcleo parte del mismo código base y tengan API similares son, definitivamente, distintas. Algunas de estas diferencias clave se resumen en la tabla de la Ilustración 9.
+
+Ilustración 9. Microsoft.Speech frente a System.Speech
+
+Microsoft.Speech.dll	System.Speech.dll
+Han de instalarse por separado	Parte del SO (Windows Vista+)
+Se puede incluir con las aplicaciones	No se puede redistribuir
+Debe construir gramáticas	Usa gramáticas o dictados libres
+Aprendizaje de usuario no necesario	Aprendizaje para un usuario específico
+Código API (C#) administrado	Código API (C++) nativo
+El archivo DLL System.Speech forma parte del SO, así que se instala en todos los equipos Windows. El archivo DLL Microsoft.Speech (y un motor en tiempo de ejecución y lenguajes asociados) tienen que descargarse e instalarse en una máquina. El usuario necesita aprender a usar el reconocimiento System.Speech leyendo algún texto para que el sistema aprenda a distinguir la pronunciación característica del usuario. El reconocimiento Microsoft.Speech funciona de forma inmediata con cualquier usuario. En un principio, System.Speech puede reconocer cualquier palabra (lo que se conoce como dictado libre). Microsoft.Speech solo reconocerá aquellas palabras y frases que estén definidas en la gramática del programa.
+
+Adición del reconocimiento de voz a una aplicación Windows Forms
+El proceso para agregar el reconocimiento y síntesis de voz a una aplicación Windows Forms o WPF, es similar al proceso para agregarlo a una aplicación de consola. Para crear el programa de demostración ficticio que se muestra en la Ilustración 2, hay que iniciar Visual Studio, crear una nueva aplicación C# Windows Forms y llamarla WinFormSpeech.
+
+Después de cargar el código de plantilla en el editor de Visual Studio en la ventana del Explorador de soluciones, agrego una referencia al archivo Microsoft.Speech.dll, igual que hice con la demostración de la aplicación de consola. En la parte superior del código, procedo a eliminar las instrucciones Using innecesarias dejando únicamente las referencias a los espacios de nombres System, Data, Drawing y Forms. Acto seguido, agrego dos instrucciones Using para poner al alcance los espacios de nombres Microsoft.Speech.Recognition y System.Globalization.
+
+La demostración de Windows Forms no utiliza la síntesis de voz, así que no usaré la referencia a la biblioteca Microsoft.Speech.Synthesis. Agregar síntesis de voz a una aplicación de Windows Forms es exactamente igual que añadirla a una aplicación de consola.
+
+En la vista de diseño de Visual Studio, procedo a arrastrar a la clase Form los controles TextBox, CheckBox y ListBox. Si hago doble clic en el control CheckBox, Visual Studio crea de forma automática el esqueleto del método de controlador de eventos CheckChanged.
+
+¿Recuerda que la demostración de la aplicación de consola comenzaba a escuchar los comandos hablados inmediatamente y que los seguía escuchando hasta que salíamos de la aplicación? Pues esa misma estrategia puede usarse para una aplicación de Windows Forms, pero en este caso, he decidido permitir que el usuario pueda activar o desactivar el reconocimiento de voz usando el control CheckBox.
+
+El archivo de código fuente del programa de demostración es Form1.cs, el cual defina una clase parcial que se muestra en la Ilustración 10. Se declara un objeto de motor de reconocimiento de voz y se crea una instancia como miembro Form. Dentro del constructor Form, conecto el controlador de eventos SpeechRecognized y creo dos objetos Grammar para después cargarlos:
+
+XML
+
+Copiar
+public Form1()
+{
+  InitializeComponent();
+  sre.SetInputToDefaultAudioDevice();
+  sre.SpeechRecognized += sre_SpeechRecognized;
+  Grammar g_HelloGoodbye = GetHelloGoodbyeGrammar();
+  Grammar g_SetTextBox = GetTextBox1TextGrammar();
+  sre.LoadGrammarAsync(g_HelloGoodbye);
+  sre.LoadGrammarAsync(g_SetTextBox);
+  // sre.RecognizeAsync() is in CheckBox event
+}
+Ilustración 10. Adición del reconocimiento de voz a Windows Forms
+
+XML
+
+Copiar
+using System;
+using System.Data;
+using System.Drawing;
+using System.Windows.Forms;
+using Microsoft.Speech.Recognition;
+using System.Globalization;
+namespace WinFormSpeech
+{
+  public partial class Form1 : Form
+  {
+    static CultureInfo ci = new CultureInfo("en-us");
+    static SpeechRecognitionEngine sre = 
+      new SpeechRecognitionEngine(ci);
+    public Form1()
+    {
+      InitializeComponent();
+      sre.SetInputToDefaultAudioDevice();
+      sre.SpeechRecognized += sre_SpeechRecognized;
+      Grammar g_HelloGoodbye = GetHelloGoodbyeGrammar();
+      Grammar g_SetTextBox = GetTextBox1TextGrammar();
+      sre.LoadGrammarAsync(g_HelloGoodbye);
+      sre.LoadGrammarAsync(g_SetTextBox);
+      // sre.RecognizeAsync() is in CheckBox event
+    }
+    static Grammar GetHelloGoodbyeGrammar()
+    {
+      Choices ch_HelloGoodbye = new Choices();
+      ch_HelloGoodbye.Add("hello");
+      ch_HelloGoodbye.Add("goodbye");
+      GrammarBuilder gb_result = 
+        new GrammarBuilder(ch_HelloGoodbye);
+      Grammar g_result = new Grammar(gb_result);
+      return g_result;
+    }
+    static Grammar GetTextBox1TextGrammar()
+    {
+      Choices ch_Colors = new Choices();
+      ch_Colors.Add(new string[] { "red", "white", "blue" });
+      GrammarBuilder gb_result = new GrammarBuilder();
+      gb_result.Append("set text box 1");
+      gb_result.Append(ch_Colors);
+      Grammar g_result = new Grammar(gb_result);
+      return g_result;
+    }
+    private void checkBox1_CheckedChanged(object sender, 
+      EventArgs e)
+    {
+      if (checkBox1.Checked == true)
+        sre.RecognizeAsync(RecognizeMode.Multiple);
+      else if (checkBox1.Checked == false) // Turn off
+        sre.RecognizeAsyncCancel();
+    }
+    void sre_SpeechRecognized(object sender, 
+      SpeechRecognizedEventArgs e)
+    {
+      string txt = e.Result.Text;
+      float conf = e.Result.Confidence;
+      if (conf < 0.65) return;
+      this.Invoke(new MethodInvoker(() =>
+      { listBox1.Items.Add("I heard you say: " 
+      + txt); })); // WinForm specific
+      if (txt.IndexOf("text") >= 0 && txt.IndexOf("box") >=
+        0 && txt.IndexOf("1")>= 0)
+      {
+        string[] words = txt.Split(' ');
+        this.Invoke(new MethodInvoker(() =>
+        { textBox1.Text = words[4]; })); // WinForm specific
+      }
+    }
+  } // Form
+} // ns
+Podría haber creado los dos objetos Grammar directamente, igual que hice en la demostración de la aplicación de consola pero, en cambio y para tener las cosas ordenadas, he optado por definir dos métodos auxiliares para que hagan el trabajo por mi: GetHelloGoodbyeGrammar y GetTextBox1TextGrammar.
+
+Tenga en cuenta que el constructor Form no llama al método RecognizeAsync, lo que significa que el reconocimiento de voz no se activará inmediatamente cuando inicie la aplicación.
+
+El método auxiliar GetHelloGoodbyeGrammar sigue el mismo patrón descrito anteriormente en este artículo:
+
+XML
+
+Copiar
+static Grammar GetHelloGoodbyeGrammar()
+{
+  Choices ch_HelloGoodbye = new Choices();
+  ch_HelloGoodbye.Add("hello"); // Should be an array!
+  ch_HelloGoodbye.Add("goodbye");
+  GrammarBuilder gb_result =
+    new GrammarBuilder(ch_HelloGoodbye);
+  Grammar g_result = new Grammar(gb_result);
+  return g_result;
+}
+De manera similar, el método auxiliar que crea un objeto Grammar para establecer el texto en el control TextBox en Windows Forms no es ninguna sorpresa:
+
+XML
+
+Copiar
+static Grammar GetTextBox1TextGrammar()
+{
+  Choices ch_Colors = new Choices();
+  ch_Colors.Add(new string[] { "red", "white", "blue" });
+  GrammarBuilder gb_result = new GrammarBuilder();
+  gb_result.Append("set text box 1");
+  gb_result.Append(ch_Colors);
+  Grammar g_result = new Grammar(gb_result);
+  return g_result;
+}
+El auxiliar reconocerá la frase: "Establecer cuadro de texto 1 rojo". Sin embargo, el usuario no tiene por qué decir esta frase de forma exacta. Por ejemplo, el usuario podría decir: "Establezca el texto del cuadro de texto 1 en rojo" y aun así el motor reconocería la frase como si hubiera dicho "Establecer el cuadro de texto 1 rojo", pero con un valor de confianza menor al que tendría si el usuario hubiera dicho el patrón del objeto Grammar exactamente. Dicho de otro modo: cuando crea objetos Grammar, no necesita preocuparse de todas y cada una de las variaciones posibles de una frase. Siguiendo los pasos anteriores, podrá simplificar radicalmente el uso del reconocimiento de voz.
+
+El controlador de eventos CheckBox se define como se indica a continuación:
+
+XML
+
+Copiar
+private void checkBox1_CheckedChanged(object sender, EventArgs e)
+{
+  if (checkBox1.Checked == true)
+    sre.RecognizeAsync(RecognizeMode.Multiple);
+  else if (checkBox1.Checked == false) // Turn off
+    sre.RecognizeAsyncCancel();
+}
+El objeto de motor del reconocimiento de voz "sre", siempre estará ahí hasta que la aplicación de Windows Forms deje de funcionar. Este objeto se activa y desactiva al utilizar los métodos RecognizeAsync y RecognizeAsync­Cancel cuando el usuario alterna el control CheckBox.
+
+La definición del controlador de eventos de reconocimiento de voz comienza de la siguiente manera:
+
+XML
+
+Copiar
+void sre_SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+{
+  string txt = e.Result.Text;
+  float conf = e.Result.Confidence;
+  if (conf < 0.65) return;
+...
+Además de las propiedades de Result.Text y Result.Confidence que casi siempre se utilizan, el objeto Result tiene muchas otras propiedades también útiles y más avanzadas a las que tal vez quiera echar un vistazo, como por ejemplo, Homophones y ReplacementWordUnits. Es más, el motor de reconocimiento de voz también posee una gran variedad de eventos útiles, como SpeechHypothesized.
+
+El código del controlador de eventos finaliza de la siguiente manera:
+
+XML
+
+Copiar
+...
+  this.Invoke(new MethodInvoker(() =>
+    { listBox1.Items.Add("I heard you say: " + txt); }));
+  if (txt.IndexOf("text") >= 0 &&
+    txt.IndexOf("box") >= 0 && txt.IndexOf("1")>= 0)
+  {
+    string[] words = txt.Split(' ');
+    this.Invoke(new MethodInvoker(() =>
+    { textBox1.Text = words[4]; }));
+  }
+}
+El texto reconocido se repite en el control ListBox utilizando el delegado MethodInvoker. Como el reconocedor de voz se ejecuta en un subproceso diferente al de la IU de Windows Forms, si intenta acceder directamente al control ListBox tal y como se muestra a continuación:
+
+XML
+
+Copiar
+listBox1.Items.Add("I heard you say: " + txt);
+esto fallará e iniciará una excepción. Una alternativa al invocador del método es utilizar el delegado Action tal y como se indica:
+
+XML
+
+Copiar
+this.Invoke( (Action)( () =>
+  listBox1.Items.Add("I heard you say: " + txt)));
+En teoría, utilizar el delegado MethodInvoker para esta situación es bastante más eficiente que usar el delegado Action, ya que el primero forma parte del espacio de nombres Windows.Forms y, por lo tanto, de aplicaciones concretas de Windows Forms. El delegado Action es más general. Este ejemplo le indica que puede manejar completamente una aplicación de Windows Forms utilizando el reconocimiento de voz, lo cual resulta increíblemente potente y útil.
+
+Resumen
+Si lo que quería era explorar el reconocimiento y la síntesis de voz con aplicaciones .NET, con la información que le he facilitado en este artículo ya puede ponerse manos a la obra. No le resultará demasiado difícil dominar este tipo de tecnología una vez haya hecho la instalación y superado los obstáculos iniciales. El problema real del reconocimiento y la síntesis de voz, es saber cuándo resultan útiles.
+
+Con las aplicaciones de consola, puede crear interesantes diálogos en los cuales el usuario pregunta y la aplicación responde, creando así un diálogo parecido a los que se tienen con Cortana. Recuerde que tendrá que tener un poquito de cuidado cuando su ordenador hable, ya que lo que diga puede ser registrado de nuevo por el micrófono y reconocido. Personalmente me he visto envuelto en ciertas situaciones, cuanto menos interesantes, en las que hago una pregunta a la aplicación y ésta la reconoce y la responde normalmente, pero resulta que la respuesta desencadena otro evento de reconocimiento para acabar por tener un entretenidísimo diálogo atascado en un bucle infinito.
+
+Otro posible uso que le puede dar al reconocimiento de voz con una aplicación de consola, es reconocer comandos tales como "Iniciar bloc de notas" e "Iniciar Word". Es decir, una aplicación de consola puede utilizarse para realizar acciones en su equipo host que normalmente haría utilizando el ratón y el teclado.
+
+El Dr. James McCaffrey trabaja para Microsoft Research en Redmond, Wash. Ha trabajado en gran cantidad de productos de Microsoft, como Internet Explorer y Bing. Es posible contactar con el Dr. McCaffrey en la dirección de correo jammc@microsoft.com.
+
+Gracias a los siguientes expertos técnicos de Microsoft Research por su ayuda en la revisión de este artículo: Rob Gruen, Mark Marron y Curtis von Veh

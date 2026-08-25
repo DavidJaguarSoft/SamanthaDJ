@@ -1,0 +1,53 @@
+﻿
+----------------------------------------------------------------------------------------------------
+Jueves 7 junio 2026
+
+DESCRIPCION
+El programa Samantha es un software que puedes incorporar en tus programas en desarrollo
+para que funcionen con ordenes de voz.
+En este ejemplo vimos un programa desarrollado en C# Net 10 y Blazor Assembly.
+Con samantha tu puedes crear tus propias instrucciones de voz, por ejemplo:
+Le puedes decir a tu programa que abra el modulo de ventas o que te imprima el reporte de ventas de hoy.
+Tu tienes la opción de agregar tus propias instrucciones de voz, no existe limite.
+Al incorporar a Samantha en tu programación podras desarrollar software de manejo fácil, rápido y
+cómodo y que incluso pueda desempeñarse correctamente bajo situaciones de estrés o limitadas,
+tales como baja visibilidad o entornos caóticos; incluso para personas con problemas de visión que se
+les dificulta leer las letras en un monitor.
+
+En la descripcón del vide te dejo los links para descargar el programa fuente de este demo y el software de
+Samantha TOTALMENTE GRATIS.
+
+Por ultimo hago la invitacion a toda la comunidad que desen formar una sociedad para comercializar o
+difundir de forma masiva este el programa de Samantha
+
+Programa fuente Demo C# Blazor Assembly Net 10
+https://github.com/DavidJaguarSoft/SamanthaDemo_BlazorNet10
+
+Canal de Youtube
+https://www.youtube.com/@DavidJaguarStudio
+
+Samantha Service Installer Github		
+https://github.com/DavidJaguarSoft/SamanthaServiceInstaller-20260513
+
+Otra opción de descarga de Samantha Service Portal Installer
+https://www.DavidJaguarSoft.com/download/installer/SamanthaInstaller 20260513.01.zip
+----------------------------------------------------------------------------------------------------
+OBJETIVO
+El Asistente Samantha nace de la necesidad de desarrollar software de manejo fácil, rápido y
+cómodamente y que incluso pueda desempeñarse correctamente bajo situaciones de estrés o limitadas,
+tales como baja visibilidad y entornos caóticos.
+----------------------------------------------------------------------------------------------------
+COMPONENTES
+El software de Samantha consta de los siguientes módulos:
+- Programa de escritorio desarrollado en C# y WPF.
+- APIs restull enlazadas al portal web.
+- Portal web en MVC y C# para administrar las gramáticas e instrucciones que reconoce el software.
+- Demo desarrollado en Blazor .Net 10 con C#
+- Base de datos y procedimientos almacenados en SQL server en hosting Neubox.
+----------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+
+
+

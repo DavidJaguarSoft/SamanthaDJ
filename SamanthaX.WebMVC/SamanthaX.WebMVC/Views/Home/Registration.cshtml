@@ -1,0 +1,204 @@
+﻿@model SamanthaX.WebMVC.Models.Home.RegistrationModel
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Register</h3>
+<div class="row">
+    <div class="danger">
+        @ViewBag.Error
+    </div>
+    <div class="col-md-4"></div>
+
+    <div class="col-md-4">
+        @using (Html.BeginForm("")) {
+            <form action="@Url.Content("~/Home/Register")" method="post">
+
+                <div class="form-group">
+                    <label>Company</label>
+                    <br />
+                    @Html.TextBox(
+                        "Company",
+                        null,
+                        new {
+                            @id = "IDCompany",
+                            @class = "form-control",
+                            @placeholder = "Company name",
+                            @maxlength = "50",
+                        }
+                    )
+                    <br />
+                </div>
+
+                <div class="form-group">
+                    <label>First Name</label>
+                    <br />
+                    @Html.TextBox(
+                        "FirstName",
+                        null,
+                        new {
+                            @id = "IDFirstName",
+                            @class = "form-control",
+                            @placeholder = "First Name",
+                            @maxlength = "50",
+                        }
+                    )
+                    <div style="color:red;">@Html.ValidationMessage("FirstName")</div>
+                    <br />
+                </div>
+
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <br />
+                    @Html.TextBox(
+                        "LastName",
+                        null,
+                        new {
+                            @id = "IDLastName",
+                            @class = "form-control",
+                            @placeholder = "Last Name",
+                            @maxlength = "50",
+                        }
+                    )
+                    <div style="color:red;">@Html.ValidationMessage("LastName")</div>
+                    <br />
+                </div>
+
+                <div class="form-group">
+                    <label>EMail</label>
+                    <br />
+                    @Html.TextBox(
+                        "EMail",
+                        null,
+                        new {
+                            @id = "IDEMail",
+                            @class = "form-control",
+                            @placeholder = "EMail",
+                            @maxlength = "100",
+                        }
+                    )
+                    <div style="color:red;">@Html.ValidationMessage("EMail")</div>
+                    <br />
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <br />
+                    @Html.TextBox(
+                        "Password",
+                        null,
+                        new {
+                            @class = "form-control",
+                            @maxlength = "15",
+                        }
+                    )
+                    <div style="color:red;">@Html.ValidationMessage("Password")</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <br />
+                    @Html.TextBox(
+                        "ConfirmPassword",
+                        null,
+                        new {
+                            @class = "form-control",
+                            @maxlength = "15",
+                        }
+                    )
+                    <div style="color:red;">@Html.ValidationMessage("ConfirmPassword")</div>
+                </div>
+
+                <br />
+                <div class="text-start">
+                    <div class="text-center">
+                        <button
+                                type="button"
+                                class="btn btn-link"
+                                onclick="TermsAndConditionsES_()">
+                            Go to read our Terms and Conditions
+                        </button>
+                    </div>
+                </div>
+
+                <div class="checkbox mt-2">
+                    @Html.CheckBoxFor(model => model.IReadTerms)
+                    @Html.LabelFor(m => m.IReadTerms, "I have read the terms and conditions")
+                    <div style="color:red">
+                        @Html.ValidationMessageFor(model => model.IReadTerms)
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary" onclick="Ejecutar()">Register</button>
+                </div>
+
+                <br />
+                <div class="text-start">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="text-decoration-underline">
+                            @Html.ActionLink(
+                                "I already have an account",
+                                "Login",
+                                "Home",
+                                new { area = "" },
+                                new { @class = "nav-link" }
+                           )
+                        </li>
+                    </ul>
+                </div>
+
+                @if(ViewData["ErrorMessageSX"] != null) {
+                    <div class="mt-2">
+                        <div class="alert alert-warning" role="alert">
+                            @ViewData["ErrorMessageSX"]
+                        </div>
+                    </div>
+                }
+            </form>
+        }
+
+    </div>
+
+    <div class="col-md-4"></div>
+</div>
+
+<div id="MyModalTest" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Procesando información !</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Espere por favor ...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function TermsAndConditionsES_() {
+        var companyValue = $("#IDCompany").val();
+        var firstnameValue = $("#IDFirstName").val();
+        var lastnameValue = $("#IDLastName").val();
+        var emailValue = $("#IDEMail").val();
+        
+        window.location.href = '@Url.Action("TermsAndConditionsES", "Home")'
+            + '?company=' + companyValue
+            + '&firstname=' + firstnameValue
+            + '&lastname=' + lastnameValue
+            + '&email=' + emailValue
+            + '&origin=' + 'FromRegister';
+    }
+
+    function Ejecutar() {
+        $('#MyModalTest').modal('show');
+        $.ajax({
+            url: '@Url.Action("~/home/Registration")',
+            type: 'Post',
+            data: {},
+        });
+    }
+</script>

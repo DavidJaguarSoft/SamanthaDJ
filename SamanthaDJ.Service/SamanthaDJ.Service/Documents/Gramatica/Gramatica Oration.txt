@@ -1,0 +1,92 @@
+﻿--
+Sábado 21 marzo 2026
+----------------------------------------------------------
+como saber la gramatica de una oracion ? que hora es
+-- Interrogativo-Sujeto-Verbo
+-- Que		    -hora  -es
+1. Análisis de "¿Qué hora es?"
+Tipo de oración: Es una oración interrogativa directa.
+Estructura: Es una oración copulativa (usa el verbo ser).
+¿Qué...?: Pronombre interrogativo que funciona como atributo.
+hora: Sustantivo femenino, núcleo del sujeto.
+es: Verbo copulativo (ser) en tercera persona del singular.
+Concordancia: Se usa "es" en singular porque concuerda con "la una", y se usa "son" para el resto de las horas (son las dos...)
+----------------------------------------------------------
+como saber la gramatica de una oracion ? que horas son
+-- Interrogacion-Sujeto-Verbo
+-- Que 	        -horas - son
+2. Análisis Gramatical: "¿Qué horas son?"
+Tipo de oración: Interrogativa directa.
+Verbo: "Son" (verbo copulativo ser), conjugado en tercera persona del plural para concordar con "las horas".
+Sujeto: "Las horas" (plural).
+¿Qué? / Qué horas: Actúa como atributo o parte de la pregunta sobre la cantidad de tiempo.
+Concordancia: Se usa "son" en plural (son las 2, son las 3), excepto para la una (es la 1:00).
+----------------------------------------------------------
+como saber la gramatica de una oracion ? que dia es hoy
+-- Interrogacion-verbo-sujeto
+-- Que día		-es -hoy
+Ejemplo: "¿Qué día es hoy?"
+Verbo: "es" (verbo copulativo ser), conjugado en tercera persona del singular.
+Sujeto: "hoy" (actúa como el sujeto del que se predica algo).
+Atributo/Predicado: "Qué día" (se pregunta por la característica o identidad).
+Estructura: Es una interrogación directa que busca identificar el día actual. 
+Nota importante: En español, los días de la semana y los meses se escriben con minúscula, a menos que inicien la frase.
+----------------------------------------------------------
+como saber la gramatica de una oracion ? cuanto he vendido
+-- Interrogacion - Predicado 
+-- Cuánto		 - he Vendido
+1. Análisis Morfosintáctico (Palabra por palabra) 
+Cuánto: Adverbio interrogativo de cantidad. Actúa como el núcleo del complemento circunstancial de cantidad (a veces interpretado como pronombre interrogativo en contexto de pregunta directa).
+He: Verbo auxiliar "haber", conjugado en primera persona del singular del presente de indicativo (yo he).
+Vendido: Participio del verbo "vender". Forma parte del tiempo compuesto (Pretérito Perfecto Compuesto).
+He vendido: Núcleo del Predicado Verbal (verbo compuesto)
+----------------------------------------------------------
+como saber la gramatica de una oracion ? cuánto ya vendí
+-- Interrogacion - Predicado
+-- Cuánto		 - ya Vendí
+1. Análisis de "Cuando ya vendí"
+Cuando (Nexo): Adverbio relativo de tiempo. Actúa como conector.
+Ya (Adverbio): Adverbio de tiempo que indica que la acción ha concluido.
+Vendí (Verbo): Verbo vender conjugado en primera persona del singular (yo) del pretérito perfecto simple (pasado).
+Sujeto omitido: (Yo). 
+
+Tipo de frase: Es una oración subordinada adverbial de tiempo. Significa que el momento en que se realizó la venta es el punto de referencia temporal para otra acción principal (ej. "Cuando ya vendí, me fui").
+----------------------------------------------------------
+como saber la gramatica de la oracion "cuanto fue mi ultima venta ?"
+-- Interrogacion - Predicado
+-- Predicado  - Sujeto
+-- Cuánto fue - mi ultima venta
+1. Análisis Morfológico (Categorías Gramaticales) 
+Cuánto: Adverbio interrogativo (o cuantificador interrogativo).
+fue: Verbo ser conjugado en pretérito perfecto simple, 3ª persona del singular.
+mi: Determinante posesivo (o adjetivo posesivo).
+última: Adjetivo calificativo, femenino singular.
+venta: Sustantivo común, femenino singular. 
+2. Análisis Sintáctico (Funciones en la oración)
+Sujeto: "mi última venta".
+Núcleo del sujeto: venta (sustantivo).
+Modificador directo: mi (determinante).
+Modificador directo: última (adjetivo).
+Predicado: "cuánto fue".
+Núcleo del predicado: fue (verbo).
+Atributo: cuánto (funciona como el complemento que pregunta por la cantidad del sujeto). 
+3. Características Clave
+Oración Interrogativa: Utiliza signos de interrogación para preguntar.
+Verbo Copulativo: "Fue" actúa como unión entre el sujeto ("mi última venta") y el atributo ("cuánto").
+----------------------------------------------------------
+como saber la gramatica de la oracion "cuanto vendí ayer ?"
+-- Interrogacion - verbo - sujeto
+-- Cuánto		 - vendí - ayer
+La oración "¿Cuánto vendí ayer?" es una oración interrogativa directa simple. Su análisis gramatical se desglosa de la siguiente manera:
+Estructura: Predicado + Verbo + Sujeto (elíptico) + Complementos.
+Sujeto: "Yo" (elíptico/omitido), ya que la forma verbal "vendí" indica la primera persona del singular.
+Predicado: "Cuánto... ayer".
+Verbo: "Vendí" (verbo vender, pretérito perfecto simple de indicativo, 1ª persona singular).
+Cuánto: Funciona como un cuantificador interrogativo que actúa como complemento directo del verbo (o complemento circunstancial de cantidad, dependiendo del enfoque sintáctico).
+Ayer: Complemento circunstancial de tiempo. 
+Resumen del análisis:
+Es una pregunta que busca cuantificar la acción de vender realizada por el emisor ("yo") en el tiempo pasado. 
+----------------------------------------------------------
+----------------------------------------------------------
+----------------------------------------------------------
+----------------------------------------------------------

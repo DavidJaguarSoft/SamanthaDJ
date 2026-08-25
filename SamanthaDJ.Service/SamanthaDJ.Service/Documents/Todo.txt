@@ -1,0 +1,6 @@
+﻿
+
+---------------------------------------
+<!-- <Obfuscar>$(MSBuildThisFileDirectory)..\tools\Obfuscar.Console.exe</Obfuscar> -->
+<Obfuscar>C:\Users\David\.nuget\packages\obfuscar\2.2.50\tools\Obfuscar.Console.exe</Obfuscar>
+TitireteRo1616

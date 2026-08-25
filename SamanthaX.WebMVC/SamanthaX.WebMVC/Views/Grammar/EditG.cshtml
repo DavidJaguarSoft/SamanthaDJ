@@ -1,0 +1,332 @@
+﻿
+@model SamanthaX.WebMVC.Models.System.GrammarModel
+@{
+    ViewBag.Title = "Grammar Dashboard";
+    Layout = "~/Views/Shared/_LayoutSystem.cshtml";
+}
+
+<main>
+    <div class="row">
+        <div class="col-md-2"></div>
+
+        <div class="col-md-8">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    @{
+                        string strTitle = string.Empty;
+                        if(Model.GrammarId == 0) {
+                            strTitle = "New Grammar";
+                        } else {
+                            strTitle = "Edit Grammar";
+                        }
+                    }
+                    <h4>@strTitle</h4>
+                </div>
+                <div class="panel-body">
+                    <form action="@Url.Content("~/Grammar/EditG")" method="post">
+                        <div class="container text-start">
+                            <div class="row">
+                                <div class="form-group" style="display:none">
+                                    <label>Id</label>
+                                    @Html.TextBox(
+                                        "GrammarId",
+                                        null,
+                                        new {
+                                            @id = "IDgrammarId",
+                                            @class = "form-control",
+                                            @readonly = "true"
+                                        })
+                                </div>
+                                <div class="col-3 form-group">
+                                    <label>Code</label>
+                                    @Html.TextBox(
+                                        "Code",
+                                        null,
+                                        new {
+                                            @id = "IDcode",
+                                            @class = "form-control",
+                                            @placeholder = "Code",
+                                            @maxlength = "50",
+                                            onkeyup = "ConvertToUppercase(this)",
+                                            onkeypress = "return NoAcceptSpaceKey(event)"
+                                        })
+                                    <div style="color:red;">@Html.ValidationMessage("Code")</div>
+                                    <div class="form-text" style="font-size:10px">
+                                        Code only accepts Uppercase and does not accept spaces, instead use underscore '_'
+                                    </div>
+                                    <br />
+                                </div>
+                                <div class="col-3 form-group">
+                                    <label>Name</label>
+                                    @Html.TextBox(
+                                        "Name",
+                                        null,
+                                        new {
+                                            @id = "IDname",
+                                            @class = "form-control",
+                                            @placeholder = "Name",
+                                            @maxlength = "50",
+                                        })
+                                    <div style="color:red;">@Html.ValidationMessage("Name")</div>
+                                    <br />
+                                </div>
+                                <div class="col-12 form-group">
+                                    <label>Description</label>
+                                    @Html.TextBox(
+                                        "Description",
+                                        null,
+                                        new {
+                                            @id = "IDdescription",
+                                            @class = "form-control",
+                                            @placeholder = "Description",
+                                            @maxlength = "200",
+                                        })
+                                </div>
+
+                                @if (ViewData["ErrorMessageWordClassSelect"] != null) {
+
+                                    <div class="mt-2">
+                                        <div class="alert alert-warning" role="alert">
+                                            @ViewData["ErrorMessageWordClassSelect"]
+                                        </div>
+                                    </div>
+                                }
+                                <br />
+                                <div id="resultado"></div>
+
+                                <div class="col-12 mt-2" style="background-color: #FDD835; height:auto">
+                                    <section>
+                                        <div class="container text-start">
+                                            <div class="row">
+                                                <div class="col-1 mt-2" style="width:auto">
+                                                    <button class="btn btn-success"
+                                                            type="button"
+                                                            onclick="ProcessItemGrammarBuilder_('0','SEL')">
+                                                        Word Class Add
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <br />
+
+                                    <div class="table-responsive">
+                                        <table id="theTable" class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th style="display:none;">GrammarBuilderId</th>
+                                                    <th style="display:none;">GrammarId</th>
+                                                    <th style="display:none;">WordClassId</th>
+                                                    <th>Code</th>
+                                                    <th>Name</th>
+                                                    @*<th>Registration</th>*@
+                                                    <th>Sequence</th>
+                                                    <th style="width:200px;">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.GrammarBuilderList == null) {
+                                                    <div class="mt-2">
+                                                        <div class="alert alert-danger" role="alert">
+                                                            <h3>Word Class Add</h3>
+                                                        </div>
+                                                    </div>
+                                                } else {
+                                                    foreach (SamanthaX.Model.Entity.GrammarBuilderEn item in Model.GrammarBuilderList) {
+                                                        <tr>
+                                                            <td style="display:none">@item.GrammarBuilderId</td>
+                                                            <td style="display:none">@item.GrammarId</td>
+                                                            <td style="display:none">@item.WordClassId</td>
+                                                            <td>@item.WordClassCode</td>
+                                                            <td>@item.WordClassName</td>
+                                                            @*<td style="font-size:12px">@item.DateRegistration</td>*@
+                                                            <td>@item.Sequence</td>
+                                                            <td>
+                                                                <div class="row">
+                                                                    <div class="col-auto">
+                                                                        <button class="btn btn-primary" type="button" onclick="ProcessItemGrammarBuilder_(@item.WordClassId, 'UP')">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+                                                                                <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5" />
+                                                                            </svg>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="col-auto">
+                                                                        <button class="btn btn-primary" type="button" onclick="ProcessItemGrammarBuilder_(@item.WordClassId, 'DOWN')">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down" viewBox="0 0 16 16">
+                                                                                <path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1" />
+                                                                            </svg>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    @*Delete Word Class*@
+                                                                    <div class="col-auto">
+                                                                        <button class="btn btn-danger" type="button" onclick="ProcessItemGrammarBuilder_(@item.WordClassId, 'DEL')">
+                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                                                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                                                                            </svg>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                @if (ViewData["ErrorMessageSX"] != null) {
+                                    <div class="mt-2">
+                                        <div class="alert alert-warning" role="alert">
+                                            @ViewData["ErrorMessageSX"]
+                                        </div>
+                                    </div>
+                                }
+
+                                @*Buttons*@
+                                <button type="submit" class="col-2 btn btn-primary mt-4">Save</button>
+                                <a class="col-2 btn btn-danger mt-4 ms-2" href="@Url.Action("DashboardG","Grammar")">Cancel</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div id="MyModalTest" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Processing information !</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Please wait ...</p>
+            </div>
+            @*<div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>*@
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function ConvertToUppercase(strValue) {
+        strValue.value = strValue.value.toUpperCase();
+    }
+
+    function NoAcceptSpaceKey(e) {
+        var codigo = e.keyCode || e.which;
+        console.log(e.key);
+        if (codigo === 32) {
+            console.log("_");
+            return false;
+        }
+    }
+
+    function ProcessItemGrammarBuilder_(IDwordClass, method) {
+        console.log("datos", IDwordClass, method);
+        var grammarIdValue = $("#IDgrammarId").val();
+        var codeValue = $("#IDcode").val();
+        var nameValue = $("#IDname").val();
+        var descriptionValue = $("#IDdescription").val();
+
+        console.log('datos grammarIdValue', grammarIdValue);
+        console.log('datos codeValue', codeValue);
+        console.log('datos nameValue', nameValue);
+        console.log('datos descriptionValue', descriptionValue);
+
+        window.location.href = '@Url.Action("ProcessItemGrammarBuilder", "Grammar")'
+            + '?grammarId=' + grammarIdValue
+            + '&code=' + codeValue
+            + '&name=' + nameValue
+            + '&description=' + descriptionValue
+            + '&wordClassId=' + IDwordClass
+            + '&method=' + method;
+    }
+
+    function NotUsedExample1() {
+        $("MyModalTest").modal('show');
+        var grammarIdValue = $("#IDgrammarId").val();
+        var codeValue = $("#IDcode").val();
+        var nameValue = $("#IDname").val();
+        var descriptionValue = $("#IDdescription").val();
+
+        console.log('datos grammarIdValue', grammarIdValue);
+        console.log('datos codeValue', codeValue);
+        console.log('datos nameValue', nameValue);
+        console.log('datos descriptionValue', descriptionValue);
+
+        window.location.href = '@Url.Action("SelectWordClassG", "Grammar")'
+            + '?grammarId=' + grammarIdValue
+            + '&code=' + codeValue
+            + '&name=' + nameValue
+            + '&description=' + descriptionValue;
+    }
+
+    function NotUsedExample2() {
+    var wcSelected = $("#selectwordclass").val();
+    var otroParametro = $("#codeId").val();
+    console.log('datos');
+    console.log(wcSelected);
+
+    $.ajax({
+        type: "POST",
+        url: "@Url.Action("MyTestMethod", "Grammar")",
+        data: { wordClassSelected: wcSelected, otroParametro: otroParametro },
+        success: function (data) {
+            $("#resultado").text(data);
+            //$("#resultado").text(data);
+            //alert("data.msg");
+            //$("#theTable").html(data);
+            console.log("Success data", data);
+        },
+        error: function () {
+            $("#resultado").text("Error calling method *...*.");
+        }
+    });
+}
+</script>
+
+@*<button class="btn btn-success"
+            type="button"
+            onclick="location.href='@Url.Action("NoSeUsaEjemplo","GrammarController")'">
+        +
+    </button>*@
+
+@*<div class="col-4">
+        @Html.DropDownList(
+                 "Word class",
+                 new SelectList((List<SamanthaX.Model.Entity.WordClassEn>)Session["Grammar_WordClassList"], "WordClassId", "Code"),
+                 "Select a Word Class",
+                 new {
+                     @id = "WordClassSelectedId",
+                     @name = "wordClassSelected",
+                     @class = "form-control nav-item dropdown"
+                 }
+             )
+
+    </div>*@
+@*var wordClassSelectedIdValue = $("#WordClassSelectedId").val();*@
+
+@*$.ajax({
+        type: "GET",
+        url: "@Url.Action("SelectWordClass", "Grammar")",
+        data: {grammarId: grammarIdValue, code: codeValue, name: nameValue, description: descriptionValue },
+        success: function (data) {
+            console.log("Success data", data);
+            //  Go to Get View
+            window.location.href = "@Url.Action("SelectWordClass?grammarId=grammarIdValue, code=codeValue, name=nameValue, description=descriptionValue ", "Grammar")";
+        },
+        error: function () {
+            $("#resultado").text("An error occurred while calling *NoSeUsaEjemplo*");
+        }
+    });*@
+

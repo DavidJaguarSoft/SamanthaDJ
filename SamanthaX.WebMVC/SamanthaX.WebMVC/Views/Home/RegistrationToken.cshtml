@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "Registration Token";
+}
+<main aria-labelledby="title">
+    <div class="row">
+
+        <div class="danger">
+            @ViewBag.Error
+        </div>
+        
+        <div class="col-md-4"></div>
+
+        <div class="col-md-4">
+            @using(Html.BeginForm("")) {
+                <form action="@Url.Content("~/Home/RegistrationToken")" method="post">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <br />
+                        @Html.TextBox(
+                            "EMail",
+                            @Session["UserEMail"],
+                            new {
+                                @class = "form-control",
+                                @placeholder = "EMaile",
+                                @readonly = "true",
+                                @Text = @Session["UserEMail"],
+                                @Value = @Session["UserEMail"]
+                            })
+                        <div style="color:red;">@Html.ValidationMessage("EMail")</div>
+                        <br />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Token</label>
+                        <br />
+                        @Html.TextBox(
+                              "Token",
+                              null,
+                              new {
+                                  @class = "form-control",
+                                  @Text = @Session["UserToken"],
+                                  @Value = @Session["UserToken"]
+                              })
+                        <div style="color:red;">@Html.ValidationMessage("Token")</div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary" onclick="Ejecutar()">Confirm Registration</button>
+                    </div>
+                    @if(ViewData["ErrorMessageSX"] != null) {
+                        <div class="mt-2">
+                            <div class="alert alert-warning" role="alert">
+                                @ViewData["ErrorMessageSX"]
+                            </div>
+                        </div>
+                    }
+
+                </form>
+            }
+        </div>
+
+        <div class="col-md-4"></div>
+    </div>
+</main>
+
+<div id="MyModalTest" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Procesando información !</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Espere por favor ...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function Ejecutar() {
+        $('#MyModalTest').modal('show');
+
+        $.ajax({
+            url: '@Url.Action("~/home/RegistrationToken")',
+            type: 'Post',
+            data: {},
+        });
+    }
+</script>

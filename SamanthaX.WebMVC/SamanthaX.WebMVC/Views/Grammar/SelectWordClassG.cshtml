@@ -1,0 +1,190 @@
+﻿@model List<SamanthaX.Model.Entity.WordClassEn>
+@{
+    ViewBag.Title = "Select Grammar";
+    Layout = "~/Views/Shared/_LayoutSystem.cshtml";
+}
+
+<main>
+    <div class="row ms-4">
+        <div class="col-sm-12">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="container col">
+                            <h4>Select Word Class</h4>
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-dark"
+                                    type="button"
+                                    onclick="Back()">
+                                Back
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <hr />
+                    @if(ViewData["ErrorMessageSX"] != null) {
+                        <div class="mt-2">
+                            <div class="alert alert-warning" role="alert">
+                                @ViewData["ErrorMessageSX"]
+                            </div>
+                        </div>
+                    }
+                        
+                    <div class="accordion accordion-flush" id="accordionFlushGrammar">
+                        @*----------------------------------------------------------------*@
+                        @*WORD CLASS*@
+                        @*----------------------------------------------------------------*@
+                     
+                        @if(Model == null) {
+                            <div class="mt-2">
+                                <div class="alert alert-danger" role="alert">
+                                    <h3>No Data to Display</h3>
+                                </div>
+                            </div>
+                        } else {
+                            <h2>Word Class</h2>
+                            <div class="row">
+                                <div class="col" style="display:none">Id</div>
+                                <div class="col"><strong>Code</strong></div>
+                                <div class="col"><strong>Name</strong></div>
+                                <div class="col"><strong>Description</strong></div>
+                                <div class="col"><strong>Enable</strong></div>
+                                <div class="col"><strong>Actions</strong></div>
+                            </div>
+
+                            foreach(SamanthaX.Model.Entity.WordClassEn itemGB in Model) {
+                                var colortext = "";
+                                var displaymode = "";
+                                if(itemGB.Enabled) {
+                                    colortext = "black";
+                                    displaymode = "block";
+                                } else {
+                                    colortext = "red";
+                                    displaymode = "none";
+                                }
+                                <div class="accordion-item" style="background-color: #FDD835;">
+                                    <div class="accordion-header">
+                                        <div class="container text-start">
+                                            <div class="row" style="height:40px;">
+                                                <div id="WordClassId" style="color:@colortext; display:none">
+                                                    @itemGB.WordClassId
+                                                </div>
+                                                <div class="col"
+                                                        style="display:block;height:20px;white-space:nowrap;
+                                                        text-overflow:ellipsis;overflow:hidden; color:@colortext;
+                                                        content:'...';position:relative">
+                                                    @itemGB.Code
+                                                </div>
+                                                <div class="col"
+                                                        style="display:block;height:20px;white-space:nowrap;
+                                                        text-overflow:ellipsis;overflow:hidden;color:@colortext
+                                                        content:'...';position:relative">
+                                                    @itemGB.Name
+                                                </div>
+                                                <div class="col"
+                                                        style="display:block;height:20px;white-space:nowrap;
+                                                        text-overflow:ellipsis;overflow:hidden; color:@colortext;
+                                                        content:'...';position:relative">
+                                                    @itemGB.Description
+                                                </div>
+                                                <div class="col" style="color:@colortext">@itemGB.Enabled</div>
+                                                <div class="col" style="min-width:235px">
+                                                    <div class="row">
+                                                        <div class="col" style="width:35px">
+                                                            <button class="btn btn-success" style="display:@displaymode"
+                                                                type="button"
+                                                                onclick="WordClassSelected(@itemGB.WordClassId)">
+                                                                Seleccionar
+                                                            </button>
+                                                        </div>
+                                                        <div class="col ms-0">
+                                                            <button class="accordion-button collapsed"
+                                                                    style="height: 10px; width: 15px; background-color: #FDD835"
+                                                                    data-bs-toggle="collapse"
+                                                                    data-bs-target="#@itemGB.Code"
+                                                                    aria-expanded="false"
+                                                                    aria-controls=@itemGB.Code>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @*----------------------------------------------------------------*@
+                                    @*  Recognized Word     *@
+                                    @*----------------------------------------------------------------*@
+                                    <div id=@itemGB.Code class="accordion-collapse collapse" data-bs-parent="#accordionFlushGrammar">
+                                        <div class="accordion-body">
+                                            <h5>List of Recognized Words</h5>
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="display:none;">Id</th>
+                                                            <th>Code</th>
+                                                            <th>Related Words</th>
+                                                            <th>Enable</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (itemGB.RecognizedWords == null) {
+                                                            <div class="mt-2">
+                                                                <div class="alert alert-danger" role="alert">
+                                                                    <h3>No Data to Display</h3>
+                                                                </div>
+                                                            </div>
+                                                        } else {
+                                                            foreach (SamanthaX.Model.Entity.RecognizedWordEn itemRW in itemGB.RecognizedWords) {
+                                                                <tr class="fs-6" style="background-color: #FFFF00; ">
+                                                                    @{
+                                                                        var colortextrw = "";
+                                                                        if (itemRW.Enabled) {
+                                                                            colortextrw = "black";
+                                                                        } else {
+                                                                            colortextrw = "red";
+                                                                        }
+                                                                    }
+                                                                    <td style="height: 10%; color: @colortextrw; display: none">@itemRW.RecognizedWordId</td>
+                                                                    <td class="fs-6" style="height: 10%;font-size:10px;color:@colortextrw">
+                                                                        @itemRW.Code
+                                                                    </td>
+                                                                    <td style="color: @colortextrw">@itemRW.RelatedWords</td>
+                                                                    <td style="height: 10%; color: @colortextrw">@itemRW.Enabled</td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                             }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function WordClassSelected(IDwordClass) {
+        console.log("datos", IDwordClass);
+        var myMethod = "SELWC";
+         window.location.href = '@Url.Action("EditG", "Grammar")'
+             + '?idWordClassSelected=' + IDwordClass
+             + '&origin=' + myMethod;
+    }
+
+    function Back() {
+        var myMethod = "SELWC";
+        window.location.href = '@Url.Action("EditG", "Grammar")'
+            + '?idWordClassSelected=0'
+            + '&origin=' + myMethod;
+    }
+</script>

@@ -1,0 +1,164 @@
+﻿
+-- ------------------------------------------------------------------------------------------
+Martes 2 de Junio de 2026
+
+Descripcion del producto Samantha.
+
+El programa de Samantha Speech, es un Asistente de voz. Tiene un funcionamiento similar a
+Alexa o al de Google (Hey google), en el sentido de que se le puede dar instrucciones habladas y el
+software reconoce las instrucciones.
+Ahora bien, Samantha Speech funciona como un SDK (por sus siglas en inglés, Software Development Kit
+o Kit de Desarrollo de Software), esto quiere decir que puedes incluir los servicios de este software
+en tu propio programa fuente que estés desarrollando; Dándole a tus propios desarrollos la 
+facilidad de manejarlos por voz.
+
+-- ------------------------------------------------------------------------------------------
+AGREGUE COMANDOS DE VOZ A SUS PROYECTOS !!!---
+
+Programa fuente Demo Blazor Assembly Net 10
+https://github.com/DavidJaguarSoft/SamanthaDemo_BlazorNet10
+
+Si requieres saber más sobre este Asistente de voz Samantha o sobre este programa
+Demo como su arquitectura, diseño o donde descargar el programa fuente TOTALMENTE GRATIS
+te invito a visitar nuestra pagina web o en mi canal de Youtube.
+
+De igual forma extiendo la invitación para evaluar y saber sus comentarios sobre
+este programa de SAMANTHA el cual usa librerias de reconocimiento de voz que aclaro
+NO son de Azure; Si oiste bien todas las librerias empleadas en este asistente de voz
+no tienen costo ni mensualidades.
+		
+Por ultimo y del mismo modo hago la invitacion a usuarios, empresas y a toda la comunidad
+que desen formar una asociacion para comercializar y/o difundir de forma masiva este
+Asistente de Voz
+
+Mi Canal de Youtube
+https://www.youtube.com/@DavidJaguarStudio
+
+Video puertas
+https://www.facebook.com/reel/1493405028890592
+
+Indice
+https://www.facebook.com/reel/1280298034180040
+
+Arquitectura
+https://www.facebook.com/reel/26409464875421506
+
+Portal
+https://www.facebook.com/reel/1363347395848110
+
+Servicio
+https://www.facebook.com/reel/903678052693141
+
+Portal David Jaguar Soft
+https://www.davidjaguarsoft.com/
+
+Facebook
+https://www.facebook.com/davidjaguarsoft/
+
+Samantha Service Installer Github		
+https://github.com/DavidJaguarSoft/SamanthaServiceInstaller-20260513
+
+Samantha Service Portal Installer
+https://www.DavidJaguarSoft.com/download/installer/SamanthaInstaller 20260513.01.zip
+
+-- ------------------------------------------------------------------------------------------
+Hola me presento, mi nombre es David Balam (David Jaguar) y a continuación les
+presento est e programa que he desarrollado en mi tiempo libre los ultimos 8 años.
+Buscando como comercializar este programa me tope con tu dispositivo de reconocimiento
+de voz offline, el cual curiosamente, en algo, con mi proyecto Samantha DJ.
+Si hay alguna posibilidad de platicar y considerar mi proyecto estare atento a sus
+comentarios.
+
+Mi correo: DavidJaguarSoft@gmail.com
+Whatsapp: (52) 999 247 4660
+-- ------------------------------------------------------------------------------------------
+Hello, my name is David Balam (David Jaguar), and I'd like to introduce this program that
+I've developed in my free time over the last eight years. While looking for ways to market
+this program, I came across your offline voice recognition device, which, interestingly,
+is somewhat related to my Samantha DJ project. If there's any opportunity to discuss and
+consider my project, I'd appreciate your feedback.
+
+My email: DavidJaguarSoft@gmail.com
+WhatsApp: (52) 999 247 4660
+-- ------------------------------------------------------------------------------------------
+
+
+ADD VOICE COMMANDS TO YOUR PROJECTS !!!---
+
+Blazor Assembly Net 10 Demo Source Program
+https://github.com/DavidJaguarSoft/SamanthaDemo_BlazorNet10
+
+If you need to know more about this Samantha voice assistant or this program,
+including its architecture, design, or where to download the source code
+completely free, I invite you to visit our website or my YouTube channel.
+
+I also extend an invitation to evaluate and share your feedback on this
+Samantha program, which uses speech recognition libraries that, I want to
+clarify, are not from Azure. Yes, you heard right, all the libraries used
+in this voice assistant are free of charge and have no monthly fees.
+
+Finally, I also invite users, companies, and the entire community to form
+an association to market and/or distribute this voice assistant on a large
+scale.
+
+My YouTube Channel
+https://www.youtube.com/@DavidJaguarStudio
+
+Video demo of doors
+https://www.facebook.com/reel/1493405028890592
+
+Index
+https://www.facebook.com/reel/1280298034180040
+
+Architecture
+https://www.facebook.com/reel/26409464875421506
+
+Portal
+https://www.facebook.com/reel/1363347395848110
+
+Service
+https://www.facebook.com/reel/903678052693141
+
+David Jaguar Soft Portal
+https://www.davidjaguarsoft.com/
+
+Facebook
+https://www.facebook.com/davidjaguarsoft/
+
+Samantha Service Installer Github		
+https://github.com/DavidJaguarSoft/SamanthaServiceInstaller-20260513
+
+Samantha Service Portal Installer
+https://www.DavidJaguarSoft.com/download/installer/SamanthaInstaller 20260513.01.zip
+-- ------------------------------------------------------------------------------------------
+Tags
+	Programa fuente gratis
+	Arduino
+	Automatización
+	Programación
+	C#
+	Reconocimiento de voz
+	Asistente de Voz
+	Comandos de voz
+	Gramática
+	Net core
+	Net 10
+	Blazor
+	Assembly
+	IA
+	Inteligencia artificial
+	Asistente
+	Voz
+	Speech
+	Programas para Discapacidad
+	- Negocios
+	- Oportunidades
+
+
+Asistente de voz Samantha 1. Demo Blazor Asembly Net10
+Asistente de voz Samantha 2. Indice
+Asistente de voz Samantha 3. Arquitectura
+Asistente de voz Samantha 4. Portal
+Asistente de voz Samantha 5. Service
+
+

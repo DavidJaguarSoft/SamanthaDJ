@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Logout";
+    Layout = "~/Views/Shared/_LayoutSystem.cshtml";
+}
+<main aria-labelledby="title">
+    @*<h2 id="title">@ViewBag.Title.</h2>*@
+    <h3>@ViewBag.Message</h3>
+</main>
+
+<div>
+    <form action="@Url.Content("~/System/Logout")" method="post">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4 text-center mt-4">
+                <h5>Esta seguro que desea cerrar la Sesión ?</h5>
+                <div class="row">
+                    <button type="submit"
+                            class="btn btn-primary"
+                            style="width:100px;"
+                            >
+                        Logout
+                    </button>
+                    <div style="width:100px;">
+                        <ul class="navbar-nav ms-auto btn btn-dark">
+                            <li>
+                                @Html.ActionLink(
+                                    "Back",
+                                    "Index",
+                                    "System",
+                                    new { area = "" },
+                                    new { @class = "nav-link" }
+                               )
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    </form>
+</div>
+

@@ -1,0 +1,59 @@
+﻿@model SamanthaX.WebMVC.Models.System.RecognizedWordModel
+@{
+    ViewBag.Title = "Recognized Word Enable / Disable";
+    Layout = "~/Views/Shared/_LayoutSystem.cshtml";
+}
+
+<main>
+    <div class="col-md-4"></div>
+
+    <div class="col-md-4">
+        <form action="@Url.Action("EnableRW", "RecognizedWord")" method="post">
+            @if (Model.Enabled) {
+                <h5>Are you sure you want to DISABLE the Wordd</h5>
+            } else {
+                <h5>Are you sure you want ENABLE the Word</h5>
+            }
+            <h5>@Model.Code - @Model.RelatedWords ?</h5>
+            <div class="row">
+                @if (Model.Enabled) {
+                    <button type="submit"
+                            name="Code"
+                            class="btn btn-warning"
+                            style="width:100px;">
+                        Disable
+                    </button>
+                } else {
+                    <button type="submit"
+                            name="Code"
+                            class="btn btn-primary"
+                            style="width:100px;">
+                        Enable
+                    </button>
+                }
+                <div style="width:100px;">
+                    <ul class="navbar-nav ms-auto btn btn-dark">
+                        <li>
+                            @Html.ActionLink(
+                                "Back",
+                                "CatalogRW",
+                                "RecognizedWord",
+                                new { area = "" },
+                                new { @class = "nav-link" }
+                           )
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+        @if (ViewData["ErrorMessageSX"] != null) {
+            <div class="mt-2">
+                <div class="alert alert-warning" role="alert">
+                    @ViewData["ErrorMessageSX"]
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-md-4"></div>
+</main>

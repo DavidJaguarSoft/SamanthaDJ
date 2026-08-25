@@ -1,0 +1,120 @@
+﻿@model List<SamanthaX.Model.Entity.WordClassEn>
+@{
+    ViewBag.Title = "Word Class Catalog";
+    Layout = "~/Views/Shared/_LayoutSystem.cshtml";
+}
+
+<main>
+    <div class="row ms-4">
+        <div class="col-sm-12">
+            <div class="panel panel-warning">
+                <div class="panel-heading">
+                    <h4>@ViewBag.Title</h4>
+                </div>
+                <div class="panel-body">
+                    <a class="btn btn-primary" href="@Url.Action("EditWC", "WordClass", new { wordClassId = 0})">
+                        New Word Class
+                    </a>
+                    <hr />
+                    @if (ViewData["ErrorMessageSX"] != null) {
+                        <div class="mt-2">
+                            <div class="alert alert-warning" role="alert">
+                                @ViewData["ErrorMessageSX"]
+                            </div>
+                        </div>
+                    }
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="display:none;">Id</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Example</th>
+                                    <th>Registration</th>
+                                    <th>Enable</th>
+                                    <th style="width:180px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (SamanthaX.Model.Entity.WordClassEn item in Model) {
+                                    <tr>
+                                        @{
+                                            var colortext = "";
+                                            string classbutton = "";
+                                            string labelbutton = "";
+                                            if(item.Enabled) {
+                                                colortext = "black";
+                                                classbutton = "btn btn-danger";
+                                                labelbutton = "Disable";
+                                            } else {
+                                                colortext = "red";
+                                                classbutton = "btn btn-dark";
+                                                labelbutton = "Enable";
+                                            }
+                                        }
+                                        <td style="color: @colortext; display:none">@item.WordClassId</td>
+                                        <td style="color:@colortext">@item.Code</td>
+                                        <td style="color:@colortext">@item.Name</td>
+                                        <td style="color:@colortext">@item.Description</td>
+                                        <td style="color:@colortext">@item.Example</td>
+                                        <td style="color:@colortext">@item.DateRegistration</td>
+                                        <td style="color:@colortext">@item.Enabled</td>
+                                        <td>
+                                            <a class="btn btn-success"
+                                               href="@Url.Action("EditWC","WordClass", new { wordClassId = item.WordClassId})">
+                                                Edit
+                                            </a>
+                                            @if(item.Enabled) {
+                                                <a class="btn btn-danger"
+                                                   href="@Url.Action("EnableWC","WordClass", new { wordClassId = item.WordClassId})">
+                                                    Disable
+                                                </a>
+                                            } else {
+                                                <a class="@classbutton"
+                                                   href="@Url.Action("EnableWC","WordClass", new { wordClassId = item.WordClassId})">
+                                                    @labelbutton
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="MyModalTest" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Processing information !</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please wait ...</p>
+                </div>
+                <div class="modal-footer">
+                    <button
+                            type="button"
+                            href="@Url.Action("WordClassDelete","System", new { wordClassId = Session["Hola"]})"
+                            class="btn btn-primary">
+                        Si
+                    </button>
+                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal" aria-label="Close">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function Ejecutar(number) {
+        $('#MyModalTest').modal('show');
+        Session["Hola"] = number;
+    }
+</script>
